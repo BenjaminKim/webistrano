@@ -1,22 +1,80 @@
+<!--super simple tree-->
+<div class="tree" id="root">
+    <% @menu.each do |branch| %>
+        <%= tree_brnach_draw(branch) %>
+    <% end %>
+</div>
+<script>
+    function isBranchOpen(branch) {
+        return branch.children("div.tree").attr("hidden") == null;
+    }
 
-<%= render(:partial => 'layouts/menu_box', :locals => {
-                                             :box_type => 'projects', 
-                                             :status => controller_in_use_or(ProjectsController, :open, Project), 
-                                             :path => projects_path } )%>
+    function openBranch(branch) {
+        function _open(branch) {
+            var tree = branch.children("div.tree");
+            var button = branch.children("button");
+            if (tree.attr("hidden") == null) {
+                return;
+            } else {
+                tree.removeAttr("hidden");
+                button.children("span").removeClass("glyphicon-plus");
+                button.children("span").addClass("glyphicon-minus");
+            }
+        }
+        branch.parents("div.branch").each(function() {
+            _open($(this));
+        });
+        _open(branch);
+    }
 
-<%= render(:partial => 'layouts/menu_box', :locals => {
-                                             :box_type => 'hosts', 
-                                             :status => controller_in_use_or(HostsController, :closed, Host), 
-                                             :path => hosts_path } )%>
+    function foldBranch(branch) {
+        var tree = branch.children("div.tree");
+        var button = branch.children("button");
+        if (tree.attr("hidden") != null) {
+            return;
+        } else {
+            tree.attr("hidden", "hidden");
+            button.children("span").removeClass("glyphicon-minus");
+            button.children("span").addClass("glyphicon-plus");
+        }
+    }
 
-<%= render(:partial => 'layouts/menu_box', :locals => {
-                                             :box_type => 'recipes', 
-                                             :status => controller_in_use_or(RecipesController, :closed, Recipe), 
-                                             :path => recipes_path } )%>
+    function toggleBranch(branch) {
+        var tree = branch.children("div.tree");
+        var button = branch.children("button");
+        if (tree.attr("hidden") != null) {
+            tree.removeAttr("hidden");
+            button.children("span").removeClass("glyphicon-plus");
+            button.children("span").addClass("glyphicon-minus");
+        } else {
+            tree.attr("hidden", "hidden");
+            button.children("span").removeClass("glyphicon-minus");
+            button.children("span").addClass("glyphicon-plus");
+        }
+    }
 
-<%= render(:partial => 'layouts/menu_box', :locals => {
-                                             :box_type => 'users', 
-                                             :status => controller_in_use_or(UsersController, :closed, User), 
-                                             :path => users_path } )%>
+    $(".branch-toggler").click(function() {
+        var branch = $(this).parent();
+        toggleBranch(branch);
+    });
 
 
+    $(document).ready(function() {
+        var branch = null;
+
+        if (window.location.pathname.match(/^\/projects\/[0-9]+/)) {
+            var projectId = window.location.pathname.match(/^\/projects\/([0-9]+)/)[1]
+            var branchId = "#project-" + projectId + "-branch"
+            branch = $(branchId);
+        } else if (window.location.pathname.match(/^\/projects/)) {
+            branch = $("#projects-branch");
+        } else if (window.location.pathname.match(/^\/hosts/)) {
+            branch = $("#hosts-branch");
+        } else if (window.location.pathname.match(/^\/recipes/)) {
+            branch = $("#recipes-branch");
+        }
+        if (branch != null) {
+            openBranch(branch);
+        }
+    });
+</script>

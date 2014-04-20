@@ -1,25 +1,19 @@
-<%= form_for(:project, :url => project_path(@project), :html => { :method => :put }) do |f| %>
-  
-  <%= render(:partial => 'form')%>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.edit', model: (I18n.t 'helpers.titles.stage') %></h4>
+        </div>
 
-  <%= link_to 'Back to project', project_path(@project), :class => 'arrow_link ontheright', :style => 'margin-right: 80px' %>
+        <%= form_for(:project, :url => project_path(@project), :html => { :method => :put }) do |f| %>
 
-  <p>
-    <%= submit_tag "Update project" %>
-  </p>
-
-<% end %>
-
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Back to project", project_path(current_project), :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    Project <%= link_to current_project.name, project_path(current_project) %> &gt; 
-    Edit
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "Edit project #{h(current_project.name)}" %>
-  <h2>Edit <%= link_to h(current_project.name), project_path(current_project) %></h2>
-<% end %>
+            <div class="modal-body">
+            <%= render(:partial => 'form')%>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close'%></button>
+                <%= submit_tag (I18n.t 'helpers.form.update'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>

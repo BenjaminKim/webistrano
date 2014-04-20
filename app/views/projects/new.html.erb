@@ -1,26 +1,18 @@
-<%= form_for(:project, :url => projects_path) do |f| %>
-<div style="width:335px;">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.edit', model: (I18n.t 'helpers.titles.stage') %></h4>
+        </div>
 
-  <%= render(:partial => 'form')%>
-  
-  <%= link_to 'Back to projects', projects_path, :class => 'arrow_link ontheright' %>
-
-  <p>
-    <%= submit_tag "Create" %>
-  </p>
+        <%= form_for(:project, :url => projects_path) do |f| %>
+            <div class="modal-body">
+                <%= render(:partial => 'form')%>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close'%></button>
+                <%= submit_tag (I18n.t 'helpers.form.update'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
 </div>
-<% end %>
-
-
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Manage Projects", projects_path, :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    New
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "New project" %>
-  <h2>New project</h2>
-<% end %>

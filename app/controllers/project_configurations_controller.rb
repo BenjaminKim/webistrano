@@ -16,11 +16,17 @@ class ProjectConfigurationsController < ApplicationController
   # GET /projects/1/project_configurations/new
   def new
     @configuration = current_project.configuration_parameters.new
+    respond_to do |format|
+      format.html { render layout: false }
+    end
   end
 
   # GET /projects/1/project_configurations/1;edit
   def edit
     @configuration = current_project.configuration_parameters.find(params[:id])
+    respond_to do |format|
+      format.html { render layout: false }
+    end
   end
 
   # POST /projects/1/project_configurations

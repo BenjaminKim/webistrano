@@ -12,7 +12,7 @@ ActionMailer::Base.smtp_settings = WebistranoConfig[:smtp_settings]
 
 ActiveSupport::Notification.webistrano_sender_address = WebistranoConfig[:webistrano_sender_address]
 
-WebistranoBundler::Application.config.middleware.use ExceptionNotification::Rack,
+Webistrano::Application.config.middleware.use ExceptionNotification::Rack,
   :email => {
     # :email_prefix => "[Whatever] ",
     :sender_address => WebistranoConfig[:exception_sender_address],

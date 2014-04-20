@@ -42,72 +42,73 @@
 <% end %>
 
 <% content_for(:page_scripts) do %>
-  <script type="text/javascript">
-    
-    function toggle_host(){
-      var host_id = /host_(\d+)/.exec(this.id)[1];
-      var checked = $('deployment_excluded_host_ids_' + host_id).getAttribute('checked');
+    <script type="text/javascript">
 
-      if( checked == 'checked' ){
-        enable_host(host_id);
-      }else{
-        disable_host(host_id);
-      }
-    }
-    
-    function disable_host(host_id){
-      var on = $("host_" + host_id + "_on");
-      var off = $("host_" + host_id + "_off");
-      
-      on.hide();
-      off.show();
-      $('deployment_excluded_host_ids_' + host_id).writeAttribute('checked', 'checked');
-      on.up('tr').removeClassName('enabled_host');
-      on.up('tr').addClassName('disabled_host');
-    }
-    
-    function enable_host(host_id){
-      var on = $("host_" + host_id + "_on");
-      var off = $("host_" + host_id + "_off");
-      
-      off.hide();
-      on.show();
-      $('deployment_excluded_host_ids_' + host_id).writeAttribute('checked', false);
-      on.up('tr').addClassName('enabled_host');
-      on.up('tr').removeClassName('disabled_host');
-    }
+        function toggle_host(){
+            var host_id = /host_(\d+)/.exec(this.id)[1];
+            checkbox_id = "#deployment_excluded_host_ids_" + host_id
+            var checked = $(checkbox_id).is(':checked');
 
-	function toggle_select_all() {
-      var on = $("select_all_on");
-      var off = $("select_all_off");
-      var enabled = on.visible();
-	  if (enabled) {
-		on.hide();
-		off.show();
-	  } else {
-        off.hide();
-        on.show();
-	  }
-	
-      $$('tr.toggle_host').each(function(el){
-        var host_id = /host_(\d+)/.exec(el.id)[1];
-		if (enabled) {
-		  disable_host(host_id);
-		} else {
-		  enable_host(host_id);
-		}
-      });
- 	}
-    
-    Event.observe(window, 'load', function(){    
-      $$('tr.toggle_host').each(function(el){
-        el.observe('click', toggle_host);
-      })
-      $$('tr.toggle_select_all').each(function(el){
-        el.observe('click', toggle_select_all);
-      })
-    });
-  </script>
+            if( checked ){
+                enable_host(host_id);
+            }else{
+                disable_host(host_id);
+            }
+        }
+
+        function disable_host(host_id){
+            var on = $("#host_" + host_id + "_on");
+            var off = $("#host_" + host_id + "_off");
+
+            on.hide();
+            off.show();
+            $('#deployment_excluded_host_ids_' + host_id).attr('checked', true);
+            on.up('tr').removeClassName('enabled_host');
+            on.up('tr').addClassName('disabled_host');
+        }
+
+        function enable_host(host_id){
+            var on = $("#host_" + host_id + "_on");
+            var off = $("#host_" + host_id + "_off");
+
+            off.hide();
+            on.show();
+            $('#deployment_excluded_host_ids_' + host_id).attr('checked', false);
+            on.up('tr').addClassName('enabled_host');
+            on.up('tr').removeClassName('disabled_host');
+        }
+
+        function toggle_select_all() {
+            var on = $("#select_all_on");
+            var off = $("#select_all_off");
+            var enabled = on.visible();
+            if (enabled) {
+                on.hide();
+                off.show();
+            } else {
+                off.hide();
+                on.show();
+            }
+
+            $('tr.toggle_host').each(function(el){
+                var host_id = /host_(\d+)/.exec(el.id)[1];
+                if (enabled) {
+                    disable_host(host_id);
+                } else {
+                    enable_host(host_id);
+                }
+            });
+        }
+
+        $(window).ready(function() {
+            $('tr.toggle_host').each(function(el){
+                el.on('click', toggle_host);
+            })
+            $('tr.toggle_select_all').each(function(el){
+                el.on('click', toggle_select_all);
+            })
+        });
+    </script>
 <% end %>
 
 <% content_for(:action_box) do %>
@@ -130,11 +131,11 @@
             <% for host in @stage.hosts.sort_by{|x| x.name} %>
               <tr class="toggle_host <%= if_disabled_host?(host,'disabled_host') %> <%= if_enabled_host?(host,'enabled_host') %>" id="host_<%=h host.id %>">
                 <td width="1%" style="padding:3px 0px 0px 0px;" valign="middle" align="center">
-                  <%= image_tag('peritor_theme/checkbox_on.gif', 
-                                :id => "host_#{host.id}_on", 
+                  <%= image_tag('peritor_theme/checkbox_on.gif',
+                                :id => "host_#{host.id}_on",
                                 :style => if_disabled_host?(host,'display:none;') + 'cursor:pointer;')%>
-                  <%= image_tag('peritor_theme/checkbox_off.gif', 
-                                :id => "host_#{host.id}_off", 
+                  <%= image_tag('peritor_theme/checkbox_off.gif',
+                                :id => "host_#{host.id}_off",
                                 :style => if_enabled_host?(host,'display:none;') + 'cursor:pointer;')%>
                 </td>
                 <td width="99%" title="<%=h h(host.name) %>" class="toggle_host" id="toggle_host_<%=h host.id %>">
@@ -155,9 +156,9 @@
 <% content_for(:breadcrumb) do %>
   <% breadcrumb_box do %>
     <%= link_to "Back to stage", project_stage_path(current_project, current_stage), :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    Project <%= link_to current_project.name, project_path(current_project) %> &gt; 
-    Stage <%= link_to current_stage.name, project_stage_path(current_project, current_stage) %> &gt; 
+    <%= link_to "Projects", projects_path %> &gt;
+    Project <%= link_to current_project.name, project_path(current_project) %> &gt;
+    Stage <%= link_to current_stage.name, project_stage_path(current_project, current_stage) %> &gt;
     Deployment
   <% end %>
 <% end %>

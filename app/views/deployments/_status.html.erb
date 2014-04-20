@@ -6,11 +6,11 @@
         <b>Status:</b> <%=h @deployment.status %>
         <% if @deployment.cancelling_possible? %>
           &nbsp; &nbsp;
-              <%= link_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
+              <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
         <% end %>
     	  <% if @deployment.completed? %>
           &nbsp; &nbsp;
-      	  <%= link_to "Repeat", new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
+      	  <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
         <% end %>
       </div>
   </div>
@@ -80,41 +80,33 @@
     <td align="right" width="70px">
       <% if @deployment.completed? %>
       &nbsp; &nbsp;
-      <%= link_to "Repeat", new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
+      <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
       <% end %>
       <% if @deployment.cancelling_possible? %>
         &nbsp; &nbsp;
-          <%= link_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
+          <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
       <% end %>
     </td>
   </tr>
 </table>
 
-
-
-
 <% unless @deployment.completed? %>
-  <script type="text/javascript">
-    
-    function update_status(){
-      new Ajax.Updater('status_info','<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>',{
-        method: 'get',
-        evalScripts: true,
-        parameters: {
-          random_differentiator: Math.floor(Math.random()*50000), // work around IE caching bug
-          auto_scroll: $('auto_scroll_log').checked
+    <script type="text/javascript">
+        function update_status(){
+            $.get({
+                url: '<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>',
+                data: {
+                    random_differentiator: Math.floor(Math.random()*50000), // work around IE caching bug
+                    auto_scroll: $('auto_scroll_log').checked
+                },
+                success: function(data) {
+                    // TODO: evaludate script in data
+                    $('#status_info').html(data);
+                }
+            });
         }
-      });
-    }
 
-    function update_status_2() {
-        $.get('<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>', function(data) {
-            $('#status_info').html(data)
-            setTimeout(update_status_2, 3000)
-        })
-    }
-    
-    setTimeout(update_status_2, 3000);
-    check_auto_scroll_log();
-  </script>
+        setTimeout(update_status, 3000);
+        check_auto_scroll_log();
+    </script>
 <% end %>

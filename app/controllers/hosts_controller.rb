@@ -1,15 +1,26 @@
 class HostsController < ApplicationController
   before_filter :ensure_admin, :only => [:new, :edit, :destroy, :create, :update]
+  PAGE_SIZE = 100
   
   # GET /hosts
   # GET /hosts.xml
   def index
-    @hosts = Host.order('name ASC')
+    @page = params[:page].to_i || 0
+    @page_max = Host.count / PAGE_SIZE
+    @hosts = Host.order('name ASC').offset(@page * PAGE_SIZE).limit(PAGE_SIZE)
 
     respond_to do |format|
-      format.html # index.rhtml
+      format.html
       format.xml  { render :xml => @hosts.to_xml }
     end
+  end
+
+  def search
+    @key = params[:key] || ''
+    @page = params[:page].to_i || 0
+    @page_max = Host.count / PAGE_SIZE
+    @hosts = Host.where(["name LIKE :tag", {tag: "%#{@key}%"}]).order('name ASC').offset(@page * PAGE_SIZE).limit(PAGE_SIZE)
+    render action: 'index'
   end
 
   # GET /hosts/1
@@ -19,8 +30,8 @@ class HostsController < ApplicationController
     @stages = @host.stages.uniq.sort_by{|x| x.project.name}
 
     respond_to do |format|
-      format.html # show.rhtml
-      format.xml  { render :xml => @host.to_xml }
+      format.html
+      format.xml { render :xml => @host.to_xml }
     end
   end
 
@@ -32,6 +43,7 @@ class HostsController < ApplicationController
   # GET /hosts/1;edit
   def edit
     @host = Host.find(params[:id])
+    render layout: false
   end
 
   # POST /hosts

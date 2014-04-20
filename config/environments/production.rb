@@ -1,4 +1,4 @@
-WebistranoBundler::Application.configure do
+Webistrano::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -58,7 +58,7 @@ WebistranoBundler::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets.
-  # application.js, application.css.erb, and all non-JS/CSS in app/assets folder are already added.
+  # application.js, application.css.scss, and all non-JS/CSS in app/assets folder are already added.
   config.assets.precompile += %w( desert.css prettify.css lang-rb.js prettify.js )
 
   # Ignore bad email addresses and do not raise email delivery errors.

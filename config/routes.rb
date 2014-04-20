@@ -1,6 +1,7 @@
-WebistranoBundler::Application.routes.draw do
+Webistrano::Application.routes.draw do
   root 'projects#dashboard'
 
+  get 'hosts/search', to: 'hosts#search'
   resources :hosts
   resources :recipes  do
     # data가 너무 길어 get으로 보내기 어려워서 post를 사용.
@@ -8,9 +9,6 @@ WebistranoBundler::Application.routes.draw do
   end
 
   resources :projects do
-    member do
-      get 'dashboard'
-    end
     resources :project_configurations
 
     resources :stages do

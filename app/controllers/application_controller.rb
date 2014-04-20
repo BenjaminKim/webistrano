@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   
 #  before_filter CASClient::Frameworks::Rails::Filter if WebistranoConfig[:authentication_method] == :cas
   before_filter :login_from_cookie, :login_required, :ensure_not_disabled
+  before_filter :build_menu_tree
   around_filter :set_timezone
 
   layout 'application'
@@ -62,6 +63,54 @@ class ApplicationController < ActionController::Base
       return true
     end
   end
+
+  def build_menu_tree
+    project_branch = {
+        name: I18n.t('projects.title'),
+        link: projects_path,
+        id: 'projects-branch'
+    }
+
+    project_branch[:children] = Project.order('name ASC').map do |project|
+      body = {
+          name: project.name,
+          link: project_path(project),
+          id: "project-#{project.id}-branch"
+      }
+      body[:children] = project.stages.map do |stage|
+        {
+            name: stage.name,
+            link: project_stage_path(project, stage)
+        }
+      end
+      body
+    end
+
+    host_branch = {
+        name: I18n.t('hosts.title'),
+        link: hosts_path,
+        id: 'hosts-branch'
+    }
+    host_branch[:children] = Host.order('name ASC').map do |host|
+      {
+          name: host.name,
+          link: host_path(host)
+      }
+    end
+
+    recipe_branch = {
+        name: I18n.t('recipes.title'),
+        link: recipes_path,
+        id: 'recipes-branch'
+    }
+    recipe_branch[:children] = Recipe.order('name ASC').map do |recipe|
+      {
+          name: recipe.name,
+          link: recipe_path(recipe)
+      }
+    end
+    @menu = [project_branch, host_branch, recipe_branch]
+  end
   
   def logout
     self.current_user.forget_me if logged_in?
@@ -74,5 +123,4 @@ class ApplicationController < ActionController::Base
       redirect_to "#{CASClient::Frameworks::Rails::Filter.config[:logout_url]}?serviceUrl=#{home_url}"
     end
   end
-  
 end

@@ -1,60 +1,137 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <meta name="description" content="Peritor Webistrano - Capristrano Deployment the easy way" />
-  <meta name="keywords" content="rubyonrails ruby rails capistrano deployment" />
-  <title>Peritor Webistrano - <%=h @page_title %></title>
-  <%= favicon_link_tag %>
-  <%= javascript_include_tag 'application' %>
-  <%= stylesheet_link_tag 'application' %>
-  <%= yield :page_scripts %>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Peritor Webistrano - Capristrano Deployment the easy way" />
+    <meta name="keywords" content="rubyonrails ruby rails capistrano deployment" />
+
+    <title><%= content_for?(:title) ? yield(:title) : "Webistrano" %></title>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag %>
+    <%= javascript_include_tag 'application' %>
+    <%= stylesheet_link_tag 'application' %>
+    <%= yield :page_scripts %>
 </head>
-
 <body>
-  <div id="app_top">
-    <div id="header">
-      <div id="header_claim">Capistrano deployment the easy way</div>
-      <a href="<%= root_path %>"><%= image_tag('peritor_theme/webistrano_logo.gif', :border => '0')%></a>
-    </div>
-    <div id="main_content">
-      <% if logged_in? %>
-        <div class="menu">
-          <%= render partial: 'layouts/menu' %>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <%= link_to 'Webistrano', root_path, class: 'navbar-brand' %>
         </div>
-      <% else %>
-        <div style="width:80px; float:left;">&nbsp;</div>
-      <% end %>
-      <div class="content">
-        <%= yield :breadcrumb %>
-        <%= yield :flash_content %>
-        <%= yield :page_title %>
-
-        <% unless flash[:notice].blank? %>
-          <%= nice_flash(flash[:notice]) %>
-        <% end %>
-
-        <% unless flash[:error].blank? %>
-          <%= error_flash(flash[:error]) %>
-        <% end %>
-
-        <%= yield :action_box %>
-        
-        <%= yield  %>
-      </div>
-      <div class="clear"></div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><%= link_to 'Projects', projects_path %></li>
+                <li><%= link_to 'Hosts', hosts_path  %></li>
+                <li><%= link_to 'Recipes', recipes_path  %></li>
+            </ul>
+            <% if logged_in? %>
+            <ul class="nav navbar-nav navbar-right">
+                <li><%= link_to h(current_user.login), user_path(current_user) %></li>
+                <li><%= link_to 'Logout', logout_path %></li>
+            </ul>
+            <% end %>
+        </div>
     </div>
-  </div>
-  <div id="app_bottom"></div>
+</div>
 
-  <div id="footer">
-    <div id="footer_logged">
-      <% if logged_in? %>
-       Logged in as <%= link_to h(current_user.login), user_path(current_user) %> | <%= link_to 'Logout', logout_path %>
-      <% end %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <%= render partial: 'layouts/menu' %>
+                <!--<li class="active"><a href="#">Overview</a></li>-->
+                <!--<li><a href="#">Reports</a></li>-->
+                <!--<li><a href="#">Analytics</a></li>-->
+                <!--<li><a href="#">Export</a></li>-->
+            </ul>
+        </div>
+        <br><br><br>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <%= yield :breadcrumb %>
+            <%= yield :flash_content %>
+            <h2>
+                <%= yield :page_title %>
+            </h2>
+            <br/>
+            <% unless flash[:notice].blank? %>
+                <%= nice_flash(flash[:notice]) %>
+            <% end %>
+
+            <% unless flash[:error].blank? %>
+                <%= error_flash(flash[:error]) %>
+            <% end %>
+
+            <%= yield :action_box %>
+
+            <%= yield %>
+        </div>
     </div>
-    Git Version <%= `cat REVISION` %> | <a href="https://github.com/BenjaminKim/webistrano" target="_blank">https://github.com/BenjaminKim/webistrano</a>
-  </div>
+</div>
+
+<div id="footer">
+    <div class="container">
+        Git Version <%= `cat REVISION` %> | <a href="https://github.com/BenjaminKim/webistrano" target="_blank">https://github.com/BenjaminKim/webistrano</a>
+    </div>
+</div>
+
 </body>
 
 </html>
+
+<!-- Modal Dialog -->
+<div class="modal fade" id="confirmModal" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Delete Parmanently</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure about this ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close' %></button>
+                <a class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("[rel='tooltip']").tooltip();
+        $("[rel='ajaxModal']").click(function(e){
+            e.preventDefault();
+            var url = $(this).attr('data-url');
+            $.get(url, function(data) {
+                $('<div class="modal fade">' + data + '</div>').modal({show: true});
+            }).success(function() { $('input:text:visible:first').focus(); });
+        });
+
+        $("[rel='ajaxModalConfirm']").click(function(e){
+            e.preventDefault();
+            var title = $(this).attr('data-title');
+            var message = $(this).attr('data-message');
+            var url = $(this).attr('data-url');
+            var method = $(this).attr('data-method')
+            var modalWindow = $("#confirmModal");
+            var buttonTitle = $(this).text();
+
+            modalWindow.find('.modal-title').text(title);
+            modalWindow.find('.modal-body p').text(message);
+            modalWindow.find('.modal-footer a').attr('href', url);
+            modalWindow.find('.modal-footer a').attr('data-method', method);
+            modalWindow.find('.modal-footer a').text(buttonTitle)
+            modalWindow.modal({show: true});
+        });
+    });
+</script>
+

@@ -1,23 +1,19 @@
-<%= form_for(:project, :url => clone_path(@original)) do |f| %>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.clone', model: (I18n.t 'helpers.titles.stage') %></h4>
+        </div>
 
-  <%= render(:partial => 'form')%>
-  
-  <%= link_to 'Back to projects', projects_path, :class => 'arrow_link ontheright', :style => 'margin-right: 80px' %>
+        <%= form_for(:project, :url => clone_path(@original)) do |f| %>
+            <div class="modal-body">
+                <%= render(:partial => 'form')%>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close'%></button>
+                <%= submit_tag (I18n.t 'helpers.form.clone'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>
 
-  <p>
-    <%= submit_tag "Clone" %>
-  </p>
-<% end %>
-
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Back to project", project_path(@original), :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    Clone <%= link_to @original.name, project_path(@original) %> 
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "Clone project #{h(@original.name)}" %>
-  <h2>Clone project</h2>
-<% end %>

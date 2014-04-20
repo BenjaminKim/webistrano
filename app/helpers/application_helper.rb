@@ -1,6 +1,5 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  
   def nice_flash(text)
     render(:partial => 'layouts/flash', :locals => {:text => text})
   end
@@ -39,7 +38,7 @@ module ApplicationHelper
     if !config.prompt? && config.name.match(/password/) 
       '************'
     else
-      config.value
+      config.value || ''
     end
   end
   
@@ -125,10 +124,92 @@ module ApplicationHelper
   end
   
   def breadcrumb_box(&block)
-    content_tag :div, class: 'breadcrub' do
+    content_tag :div, class: 'breadcrumb' do
       content_tag :b do
         capture(&block) if block
       end
     end
+  end
+
+  def tree_brnach_draw(branch)
+    (
+    if branch[:children].nil?
+      <<-LEAF
+        <div class="branch" #{"id=#{branch[:id]}" if branch[:id]}>
+            <span class="glyphicon glyphicon-leaf" style="padding-left: 5px"></span>
+            <a href="#{branch[:link]}" style="padding-left: 5px">#{branch[:name]}</a>
+        </div>
+      LEAF
+    else
+      children_html = branch[:children].inject '' do |aggregater, child|
+        aggregater += tree_brnach_draw(child)
+      end
+      <<-TREE
+        <div class="branch" #{"id=#{branch[:id]}" if branch[:id]}>
+            <button class="branch-toggler naked">
+                <span class="branch-toggler glyphicon glyphicon-plus"></span>
+            </button>
+            <a href="#{branch[:link]}">#{branch[:name]}</a>
+            <div class="tree" hidden="hidden" style="padding-left: 15px">
+              #{children_html}
+            </div>
+        </div>
+      TREE
+    end
+    ).html_safe
+  end
+
+  def page_title_helper(title, description)
+    (<<-TITLE
+    <div class="row">
+        <div class="col-md-6"><span class="label label-primary">#{title}</span></div>
+        <div class="col-md-6" align="right">#{description}</div>
+    TITLE
+    ).html_safe
+  end
+
+  def new_button_for_ajax(url)
+    (<<-BUTTON
+    <button class="btn btn-xs btn-primary" rel="ajaxModal" data-url="#{url}">
+        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.links.new'}
+    </button>
+    BUTTON
+    ).html_safe
+  end
+
+  def view_button_for_ajax(url)
+    (<<-BUTTON
+    <a href="#{url}" class="btn btn-xs btn-info">
+      <i class="glyphicon glyphicon-eye-open"></i> #{I18n.t 'helpers.links.view'}
+    </a>
+    BUTTON
+    ).html_safe
+  end
+
+  def edit_button_for_ajax(url)
+    (<<-BUTTON
+    <button class="btn btn-xs btn-primary" rel="ajaxModal" data-url="#{url}">
+        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.links.edit'}
+    </button>
+    BUTTON
+    ).html_safe
+  end
+
+  def clone_button_for_ajax(url)
+    (<<-BUTTON
+    <button class="btn btn-xs btn-success" rel="ajaxModal" data-url="#{url}">
+        <i class="glyphicon glyphicon-share"></i> #{I18n.t 'helpers.links.clone'}
+    </button>
+    BUTTON
+    ).html_safe
+  end
+
+  def delete_button_for_ajax(url, delete_target_name)
+    (<<-BUTTON
+    <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" data-url="#{url}" data-method="delete" data-title="#{I18n.t 'helpers.titles.delete', model: delete_target_name}" data-message="#{I18n.t 'helpers.links.confirm'}">
+        <i class="glyphicon glyphicon-trash"></i> #{I18n.t 'helpers.links.delete'}
+    </button>
+    BUTTON
+    ).html_safe
   end
 end

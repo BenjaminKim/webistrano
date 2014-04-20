@@ -6,10 +6,6 @@ class ProjectsController < ApplicationController
   # GET /projects/dashboard
   def dashboard
     @deployments = Deployment.order('created_at DESC').take(3)
-
-    respond_to do |format|
-      format.html # dashboard.rhtml
-    end
   end
   
   # GET /projects
@@ -39,13 +35,16 @@ class ProjectsController < ApplicationController
     @project = Project.new
     if load_clone_original
       @project.prepare_cloning(@original)
-      render :action => 'clone' and return
+      render action: 'clone', layout: false
+    else
+      render layout: false
     end
   end
 
   # GET /projects/1;edit
   def edit
     @project = Project.find(params[:id])
+    render layout: false
   end
 
   # POST /projects
@@ -64,7 +63,7 @@ class ProjectsController < ApplicationController
         
         @project.clone(@original) if load_clone_original
         
-        flash[:notice] = 'Project was successfully created.'
+        flash[:notice] = I18n.t 'info.create.success', model: I18n.t('projects.title')
         format.html { redirect_to project_url(@project) }
         format.xml  { head :created, :location => project_url(@project) }
       else

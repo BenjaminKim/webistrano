@@ -11,18 +11,17 @@
 <% end %>
 
 <% content_for(:page_scripts) do %>
-  <script type="text/javascript">
-    Event.observe(window, 'load', function(){    
-      var trigger = $('override_locking_trigger');
-      var target = $('deployment_override_locking');
-      
-      Event.observe(trigger, 'change', function(){
-        if(trigger.checked){
-          target.value = 1;
-        }else{
-          target.value = 0;
-        }
-      })
-    });
-  </script>
+    <script type="text/javascript">
+        $(window).ready(function(){
+                    var target = $('#deployment_override_locking');
+                    $('#override_locking_trigger').on('change', function() {
+                        if(trigger.checked){
+                            target.value = 1;
+                        }else{
+                            target.value = 0;
+                        }
+                    });
+                }
+        );
+    </script>
 <% end %>

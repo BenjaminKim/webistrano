@@ -1,26 +1,19 @@
-<%= form_for(:configuration, :url => project_project_configuration_path(@project, @configuration), :html => { :method => :put }) do |f| %>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Edit Project Configuration</h4>
+        </div>
+        <%= form_for(:configuration, :url => project_project_configuration_path(@project, @configuration), :html => { :method => :put }) do |f| %>
+            <div class="modal-body">
+                <%= render partial: 'form' %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%= submit_tag (I18n.t 'helpers.form.update'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>
 
-  <%= render(:partial => 'form')%>
-  <br/>
 
-  <%= link_to 'Back to project', project_path(current_project), :class => 'arrow_link ontheright', :style => 'margin-right: 330px' %>
-
-  <p>
-    <%= submit_tag "Update" %>
-  </p>
-
-<% end %>
-
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Back to project", project_path(current_project), :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    Project <%= link_to current_project.name, project_path(current_project) %> &gt; 
-    Edit
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "Edit configuration" %>
-  <h2>Edit configuration</h2>
-<% end %>

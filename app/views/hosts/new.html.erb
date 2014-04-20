@@ -1,27 +1,22 @@
-<% flashed_errors(:host) %>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">New Host</h4>
+        </div>
+        <%= form_for(:host, :url => hosts_path) do |f| %>
+            <div class="modal-body">
+                <b>Name (DNS name or IP address)</b><br />
+                <%= f.text_field :name, :style => 'width: 330px' %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%= submit_tag I18n.t('helpers.form.create'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>
 
-<%= form_for(:host, :url => hosts_path) do |f| %>
-  <p>
-    <b>Name (DNS name or IP address)</b><br />
-    <%= f.text_field :name, :style => 'width: 330px' %>
-  </p>
 
-  <%= link_to 'Back to hosts', hosts_path, :class => 'arrow_link ontheright', :style => 'margin-right: 330px' %>
 
-  <p>
-    <%= submit_tag "Create host" %>
-  </p>
-<% end %>
 
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Manage hosts", hosts_path, :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Hosts", hosts_path %> &gt; 
-    New
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "New host" %>
-  <h2>New host</h2>
-<% end %>

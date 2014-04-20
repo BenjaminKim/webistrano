@@ -3,8 +3,8 @@ class SessionsController < ApplicationController
   
   skip_before_filter :login_required, :except => :version
   
-  # render new.rhtml
   def new
+    render layout: false
   end
 
   def create
@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       flash[:notice] = "Logged in successfully"
     else
       flash[:error] = "Login/password wrong"
-      render :action => 'new'
+      render action: 'new', layout: false
     end
   end
 

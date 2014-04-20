@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-WebistranoBundler::Application.load_tasks
+Webistrano::Application.load_tasks

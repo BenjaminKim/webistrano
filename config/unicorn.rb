@@ -34,9 +34,6 @@ before_fork do |server, worker|
   # the following is highly recomended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
-  defined?(BlockedEmail) and BlockedEmail.connection.disconnect!
-  defined?(KakaoSnapshot) and KakaoSnapshot.connection.disconnect!
-  defined?(SmsDatabase) and SmsDatabase.connection.disconnect!
 
 #  Resque.redis.quit
 

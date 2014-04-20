@@ -25,6 +25,7 @@ class StagesController < ApplicationController
   # GET /projects/1/stages/new
   def new
     @stage = current_project.stages.new
+    render layout: false
   end
 
   def copy
@@ -61,6 +62,7 @@ class StagesController < ApplicationController
   # GET /projects/1/stages/1;edit
   def edit
     @stage = current_project.stages.find(params[:id])
+    render layout: false
   end
   
   # GET /projects/1/stages/1/tasks

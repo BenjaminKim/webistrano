@@ -10,13 +10,10 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require controls
-//= require dragdrop
-//= require effects
-//= require prototype
 //= require jquery
 //= require jquery_ujs
 //= require jquery.observe_field
+//= require bootstrap
 
 // open a new window
 function loadWindow(url) {

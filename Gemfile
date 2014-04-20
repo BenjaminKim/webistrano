@@ -34,8 +34,8 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'unicorn'
-gem 'unicorn-rails'
+#gem 'unicorn'
+#gem 'unicorn-rails'
 
 gem 'capistrano', '2.15.5'
 gem 'highline'
@@ -45,3 +45,9 @@ gem 'erubis'
 gem 'exception_notification'
 
 gem 'protected_attributes'
+
+gem 'bootstrap-sass'
+
+group :development do
+    gem 'better_errors'
+end
