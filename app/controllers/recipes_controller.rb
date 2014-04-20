@@ -1,10 +1,12 @@
 class RecipesController < ApplicationController
   before_filter :ensure_admin, :only => [:new, :edit, :destroy, :create, :update]
-  
+  skip_before_filter :verify_authenticity_token, :only => [:preview]
+
+
   # GET /recipes
   # GET /recipes.xml
   def index
-    @recipes = Recipe.find(:all)
+    @recipes = Recipe.all
 
     respond_to do |format|
       format.html # index.rhtml
@@ -83,11 +85,8 @@ class RecipesController < ApplicationController
   def preview
     @recipe = Recipe.new(params[:recipe])
     respond_to do |format|
-      format.js { 
-        render :update do |page|
-          page.replace_html :preview, :partial => "preview", :locals => {:recipe => @recipe}
-          page.show :preview_fieldset
-        end
+      format.html {
+        render partial: 'preview', locals: { recipe: @recipe }, layout: false
       }
     end
   end

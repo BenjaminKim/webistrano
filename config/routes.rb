@@ -1,45 +1,50 @@
-ActionController::Routing::Routes.draw do |map|
-  # The priority is based upon order of creation: first created -> highest priority.
-  
-  # Sample of regular route:
-  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
+WebistranoBundler::Application.routes.draw do
+  root 'projects#dashboard'
 
-  # Sample of named route:
-  # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
+  resources :hosts
+  resources :recipes  do
+    # data가 너무 길어 get으로 보내기 어려워서 post를 사용.
+    post 'preview', on: :collection
+  end
 
-  # You can have the root of your site routed by hooking up '' 
-  # -- just remember to delete public/index.html.
-  map.home '', :controller => "projects", :action => 'dashboard'
+  resources :projects do
+    member do
+      get 'dashboard'
+    end
+    resources :project_configurations
 
-  # Allow downloading Web Service WSDL as a file with an extension
-  # instead of a file named 'wsdl'
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
-  
-  map.resources :hosts
-  map.resources :recipes, :collection => {:preview => :get}
-  map.resources :projects, :member => {:dashboard => :get} do |projects|
-    projects.resources :project_configurations
-    
-    projects.resources :stages, :member => {:capfile => :get, :recipes => :any, :tasks => :get} do |stages|
-      stages.resources :stage_configurations
-      stages.resources :roles
-      stages.resources :deployments, :collection => {:latest => :get}, :member => {:cancel => :post}
+    resources :stages do
+      member do
+        get 'capfile'
+        match 'recipes', via: :all
+        get 'tasks'
+        match 'copy', via: :all
+      end
+      resources :stage_configurations
+      resources :roles
+      resources :deployments do
+        get 'latest', on: :collection
+        post 'cancel', on: :member
+        get 'status', on: :member
+      end
     end
   end
-  
   # RESTful auth
-  map.resources :users,:member => {:deployments => :get, :enable => :post}
-  map.resources :sessions, :collection => {:version => :get}
-  map.signup '/signup', :controller => 'users', :action => 'new'
-  map.login  '/login', :controller => 'sessions', :action => 'new'
-  map.logout '/logout', :controller => 'sessions', :action => 'destroy'
-  
-  # stylesheet
-  map.stylesheet '/stylesheets/application.css', :controller => 'stylesheets', :action => 'application'
+  resources :users do
+    member do
+      get :deployments
+      post :enable
+    end
+  end
 
-  # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action/:id'
+  resources :sessions do
+    get :version, on: :collection
+  end
+
+  get 'signup', to: 'users#new'
+  get 'login', to: 'sessions#new'
+  get 'logout', to: 'sessions#destroy'
+
+  match ':controller/:action', via: :all
+  match ':controller/:action/:id', via: :all
 end

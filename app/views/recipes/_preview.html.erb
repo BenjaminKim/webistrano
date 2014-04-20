@@ -1,3 +1,13 @@
-  <div class="log_output ruby">
-    <%= highlight_syntax(recipe.body || '') %>
-  </div>
+<%= javascript_include_tag 'prettify' %>
+<%= javascript_include_tag 'lang-rb' %>
+<%= stylesheet_link_tag 'prettify' %>
+<div style="display: inline-block">
+<pre class="prettyprint linenums lang-rb" style="background-color: #FFFFFF">
+<%=raw recipe.body %>
+</pre>
+</div>
+
+<script>
+    prettyPrint();
+</script>
+

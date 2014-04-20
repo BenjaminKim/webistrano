@@ -19,7 +19,7 @@
     <td align="right" title="Revision"><b>Rev:</b></td>
     <td title="<%=h deployment.revision rescue '' %>"><%= truncate(h(deployment.revision), :length =>  10) rescue '' %></td>
     <td align="right"><b>Duration:</b></td>
-    <td><%=h distance_of_time_in_words(deployment.created_at, deployment.completed_at, true) rescue "" %></td>
+    <td><%=h distance_of_time_in_words(deployment.created_at, deployment.completed_at) rescue "" %></td>
   </tr>
   <tr>
     <td align="right"><b>Comment:</b></td>

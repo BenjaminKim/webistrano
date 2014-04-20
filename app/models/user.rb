@@ -1,6 +1,6 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
-  has_many :deployments, :dependent => :nullify, :order => 'created_at DESC'
+  has_many :deployments, -> { order 'created_at DESC' }, dependent: :nullify
   
   # Virtual attribute for the unencrypted password
   attr_accessor :password
@@ -16,10 +16,16 @@ class User < ActiveRecord::Base
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
   before_save :encrypt_password
-  
-  named_scope :enabled, :conditions => {:disabled => nil}
-  named_scope :disabled, :conditions => "disabled IS NOT NULL"
-    
+
+  class << self
+    def enabled
+      where disabled: nil
+    end
+    def disabled
+      where 'disabled IS NOT NULL'
+    end
+  end
+
   def validate_on_update
     if User.find(self.id).admin? && !self.admin?
       errors.add('admin', 'status can no be revoked as there needs to be one admin left.') if User.admin_count == 1
@@ -62,13 +68,13 @@ class User < ActiveRecord::Base
   def remember_me_until(time)
     self.remember_token_expires_at = time
     self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(false)
+    save
   end
 
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
-    save(false)
+    save
   end
   
   def admin?
@@ -90,7 +96,7 @@ class User < ActiveRecord::Base
   end
   
   def recent_deployments(limit=3)
-    self.deployments.find(:all, :limit => limit, :order => 'created_at DESC')
+    self.deployments.order('created_at DESC').limit(limit)
   end
   
   def disabled?

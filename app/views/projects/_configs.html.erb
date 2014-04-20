@@ -16,7 +16,7 @@
       <td title="<%=h config.value %>"><%=h truncate(hide_password_in_value(config), :length => 45) %></td>
       <td><%= config.prompt_status_in_html %></td>
       <td><%= link_to 'Edit', edit_project_project_configuration_path(@project, config) %></td>
-      <td><%= link_to 'Delete', project_project_configuration_path(@project, config), :confirm => 'Are you sure?', :method => :delete %></td>
+      <td><%= link_to 'Delete', project_project_configuration_path(@project, config) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :delete %></td>
     </tr>
   <% end %>
   </table>

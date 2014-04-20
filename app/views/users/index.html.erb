@@ -25,12 +25,12 @@
           <% end %>
         </td>
         <td><%=h user.created_at.to_s(:date_with_day) %></td>
-        <% if current_user.admin? || current_user == user -%>
+        <% if current_user.admin? || current_user == user %>
           <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <% end -%>
-        <% if current_user.admin? -%>
-          <td><%= link_to 'Delete', user_path(user), :confirm => 'Are you sure?', :method => :delete %></td>
-        <% end -%>
+        <% end %>
+        <% if current_user.admin? %>
+          <td><%= link_to 'Delete', user_path(user) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :delete %></td>
+        <% end %>
       </tr>
     <% end %>
   </table>

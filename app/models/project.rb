@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
-  has_many :stages, :dependent => :destroy, :order => 'name ASC'
-  has_many :deployments, :through => :stages
-  has_many :configuration_parameters, :dependent => :destroy, :class_name => "ProjectConfiguration", :order => 'name ASC'
+  has_many :stages, -> { order 'name ASC' }, dependent: :destroy
+  has_many :deployments, through: :stages #, :select => "stages.*, deployments.id, deployments.task, deployments.stage_id, deployments.created_at, deployments.updated_at, deployments.completed_at, deployments.description, deployments.user_id, deployments.excluded_host_ids, deployments.revision, deployments.pid, deployments.status", :limit => 3
+  has_many :configuration_parameters, -> { order 'name ASC' }, dependent: :destroy, class_name: 'ProjectConfiguration'
   
   validates_uniqueness_of :name
   validates_presence_of :name
@@ -37,7 +37,7 @@ class Project < ActiveRecord::Base
   end
   
   def recent_deployments(limit=3)
-    self.deployments.find(:all, :limit => limit, :order => 'deployments.created_at DESC')
+    self.deployments.order('deployments.created_at DESC').limit(limit)
   end
   
   def prepare_cloning(other)

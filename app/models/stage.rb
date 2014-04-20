@@ -1,10 +1,10 @@
 class Stage < ActiveRecord::Base  
   belongs_to :project
   has_and_belongs_to_many :recipes
-  has_many :roles, :dependent => :destroy, :order => "name ASC"
-  has_many :hosts, :through => :roles, :uniq => true
-  has_many :configuration_parameters, :dependent => :destroy, :class_name => "StageConfiguration", :order => "name ASC"
-  has_many :deployments, :dependent => :destroy, :order => "created_at DESC"
+  has_many :roles, -> { order 'name ASC' }, dependent: :destroy
+  has_many :hosts, -> { uniq }, through: :roles
+  has_many :configuration_parameters, -> { order 'name ASC' }, :dependent => :destroy, :class_name => "StageConfiguration"
+  has_many :deployments, -> { order 'created_at DESC' }, :dependent => :destroy #, :select => "deployments.id, deployments.task, deployments.stage_id, deployments.created_at, deployments.updated_at, deployments.completed_at, deployments.description, deployments.user_id, deployments.excluded_host_ids, deployments.revision, deployments.pid, deployments.status", :limit => 3
   belongs_to :locking_deployment, :class_name => 'Deployment', :foreign_key => :locked_by_deployment_id 
   
   validates_uniqueness_of :name, :scope => :project_id
@@ -110,7 +110,7 @@ class Stage < ActiveRecord::Base
   end
   
   def recent_deployments(limit=3)
-    self.deployments.find(:all, :limit => limit, :order => 'deployments.created_at DESC')
+    self.deployments.order('deployments.created_at DESC').limit limit
   end
   
   # returns a better form of the stage name for use inside Capistrano recipes
@@ -126,7 +126,7 @@ class Stage < ActiveRecord::Base
     begin
       deployer.list_tasks.collect { |t| {:name => t.fully_qualified_name, :description => t.description} }.delete_if{|t| t[:name] == 'shell' || t[:name] == 'invoke'}
     rescue Exception => e
-      RAILS_DEFAULT_LOGGER.error("Problem listing tasks of stage #{id}: #{e} - #{e.backtrace.join("\n")} ")
+      logger.error("Problem listing tasks of stage #{id}: #{e} - #{e.backtrace.join("\n")} ")
       [{:name => "Error", :description => "Could not load tasks - syntax error in recipe definition?"}]
     end
   end

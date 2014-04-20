@@ -9,7 +9,7 @@
   <%= text_field 'user', 'email', :style =>'width:330px;' %>
 </p>
 
-<% unless WebistranoConfig[:authentication_method] == :cas -%>
+<% unless WebistranoConfig[:authentication_method] == :cas %>
 <p>
   <b>Password</b><br />
   <%= password_field 'user', 'password', :style =>'width:330px;' %>
@@ -19,16 +19,16 @@
   <b>Password confirmation</b><br />
   <%= password_field 'user', 'password_confirmation', :style =>'width:330px;' %>
 </p>
-<% end -%>
+<% end %>
 
 <p>
   <b>Timezone</b><br />
   <%= time_zone_select 'user', :time_zone, ActiveSupport::TimeZone.all, {},{:style => "width:330px;"} %>
 </p>
 
-<% if logged_in? && current_user.admin? -%>
+<% if logged_in? && current_user.admin? %>
   <p>
     <b>Admin?</b><br />
     <%= check_box 'user', 'admin', :class => 'noframe' %>
   </p>
-<% end -%>
+<% end %>

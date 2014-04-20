@@ -14,7 +14,21 @@
   <%= text_area 'recipe', 'body', :style =>'width:663px; height: 400px;' %>
 </p>
 
-<%= observe_field "recipe_body", :frequency => 2.5, :with => "Form.Element.serialize('recipe_body')", :url => preview_recipes_url%>
+<script>
+
+    $(document).ready(function() {
+        $('#recipe_body').observe_field(1.5, function() {
+            $.ajax({
+                type: 'post',
+                url: "<%= preview_recipes_url %>",
+                data: $('#recipe_body').serialize(),
+                success: function(data) {
+                    $('#preview_fieldset').html(data)
+                }
+            });
+        });
+    });
+</script>
 <div id="preview_fieldset">
   <fieldset class="fieldset" style="width:560px;">
     <legend>Code-Preview</legend>

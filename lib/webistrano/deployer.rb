@@ -42,7 +42,7 @@ module Webistrano
     # actual invokment of a given task (through @deployment)
     def invoke_task!
       options[:actions] = deployment.task
-      
+
       case execute!
       when false
         deployment.complete_with_error!
@@ -67,11 +67,12 @@ module Webistrano
         exchange_real_revision(config) unless (config.fetch(:scm).to_s == 'git') # git cannot do a local query by default
         save_revision(config)
         save_pid
-        
+
         config.trigger(:load)
         execute_requested_actions(config)
         config.trigger(:exit)
       }
+
       
       if status == :capistrano_abort
         false
@@ -255,9 +256,7 @@ module Webistrano
 	        hash
 	      end
       else # symbol or string
-        if cvs_root_defintion?(val)
-          val.to_s
-        elsif val.index(':') == 0
+        if val.index(':') == 0
           val.slice(1, val.size).to_sym
         elsif match = val.match(/'(.*)'/) || val.match(/"(.*)"/)
           match[1]
@@ -265,10 +264,6 @@ module Webistrano
           val
         end
       end
-    end
-    
-    def self.cvs_root_defintion?(val)
-      val.index(':') == 0 && val.scan(":").size > 1
     end
     
     # override in order to use DB logger 

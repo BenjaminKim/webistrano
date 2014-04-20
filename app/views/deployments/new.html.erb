@@ -6,7 +6,7 @@
 
 <% flashed_errors(:deployment) %>
 
-<% form_for(:deployment, :url => project_stage_deployments_path(@project, @stage)) do |f| %>
+<%= form_for(:deployment, :url => project_stage_deployments_path(@project, @stage)) do |f| %>
 <div style="width:330px;">
   <p>
     <b>Task</b><br />
@@ -76,10 +76,35 @@
       on.up('tr').addClassName('enabled_host');
       on.up('tr').removeClassName('disabled_host');
     }
+
+	function toggle_select_all() {
+      var on = $("select_all_on");
+      var off = $("select_all_off");
+      var enabled = on.visible();
+	  if (enabled) {
+		on.hide();
+		off.show();
+	  } else {
+        off.hide();
+        on.show();
+	  }
+	
+      $$('tr.toggle_host').each(function(el){
+        var host_id = /host_(\d+)/.exec(el.id)[1];
+		if (enabled) {
+		  disable_host(host_id);
+		} else {
+		  enable_host(host_id);
+		}
+      });
+ 	}
     
     Event.observe(window, 'load', function(){    
       $$('tr.toggle_host').each(function(el){
         el.observe('click', toggle_host);
+      })
+      $$('tr.toggle_select_all').each(function(el){
+        el.observe('click', toggle_select_all);
       })
     });
   </script>
@@ -93,6 +118,15 @@
 		  <% if @stage.roles.count > 0 %>
 		    <form name="excluded_hosts_form" id="excluded_hosts_form">
           <table border="0" width="210">
+            <tr class="toggle_select_all">
+			  <td width="1%" style="padding:3px 0px 0px 0px;" valign="middle" align="center">
+				<%= image_tag('peritor_theme/checkbox_on.gif', :id => 'select_all_on', :style => 'cursor:pointer;')%>
+                <%= image_tag('peritor_theme/checkbox_off.gif', :id => 'select_all_off', :style => 'display:none;cursor:pointer;')%>
+			  </td>
+ 			  <td width="99%">
+				<div class="toggle_select_all" style="overflow: hidden; padding-left: 5px; width: 180px; white-space: nowrap; cursor: pointer; color: #A40008; font-weight:bold;">select all</div>
+			  </td>
+			</tr>
             <% for host in @stage.hosts.sort_by{|x| x.name} %>
               <tr class="toggle_host <%= if_disabled_host?(host,'disabled_host') %> <%= if_enabled_host?(host,'enabled_host') %>" id="host_<%=h host.id %>">
                 <td width="1%" style="padding:3px 0px 0px 0px;" valign="middle" align="center">

@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users = User.find(:all, :order => 'login ASC')
+    @users = User.order 'login ASC'
   end
 
   # GET /users/new

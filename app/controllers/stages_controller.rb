@@ -27,6 +27,37 @@ class StagesController < ApplicationController
     @stage = current_project.stages.new
   end
 
+  def copy
+    @stage = current_project.stages.find(params[:id])
+    if request.post?
+      name = params[:stage][:name] rescue []
+      stage = current_project.stages.new
+      stage.name = name
+      unless stage.save
+        flash[:error] = "Stage recipes copy failure."
+        redirect_to copy_project_stage_url(current_project, @stage)
+        return
+      end
+
+      @stage.configuration_parameters.each do |conf|
+        cloned_conf = conf.clone
+        cloned_conf.stage = stage
+        cloned_conf.created_at = nil
+        cloned_conf.updated_at = nil
+        cloned_conf.save
+      end
+
+      @stage.recipes.each do |recipe|
+        stage.recipes.push recipe
+      end
+      stage.save
+
+      flash[:notice] = "Stage recipes successfully copied."
+      redirect_to project_stage_url(current_project, stage)
+    else
+    end
+  end
+
   # GET /projects/1/stages/1;edit
   def edit
     @stage = current_project.stages.find(params[:id])
@@ -97,8 +128,8 @@ class StagesController < ApplicationController
     @stage = current_project.stages.find(params[:id])
 
     respond_to do |format|
-      format.html { render :layout => false, :content_type => 'text/plain' }
-      format.xml  { render :xml => @stage.to_xml }
+      format.html { render layout: false }
+      format.xml  { render xml: @stage.to_xml }
     end
   end
   

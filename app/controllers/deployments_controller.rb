@@ -63,7 +63,7 @@ class DeploymentsController < ApplicationController
 
   # GET /projects/1/stages/1/deployments/latest
   def latest
-    @deployment = @stage.deployments.find(:first, :order => "created_at desc")
+    @deployment = @stage.deployments.order('created_at desc').first
 
     respond_to do |format|
       format.html { render :action => "show"}
@@ -80,7 +80,7 @@ class DeploymentsController < ApplicationController
   # POST /projects/1/stages/1/deployments/1/cancel
   def cancel
     redirect_to "/" and return unless request.post?
-    @deployment = @stage.deployments.find(:first, :order => "created_at desc")
+    @deployment = @stage.deployments.order('created_at desc').first
 
     respond_to do |format|
       begin
@@ -99,6 +99,16 @@ class DeploymentsController < ApplicationController
       end
     end
   end
+
+
+  def status
+    @deployment = @stage.deployments.find(params[:id])
+    set_auto_scroll
+
+    respond_to do |format|
+      format.html { render :partial => 'status.html.erb' }
+    end
+  end
   
   protected
   def ensure_deployment_possible
@@ -113,7 +123,7 @@ class DeploymentsController < ApplicationController
       end
     end
   end
-  
+
   def set_auto_scroll
     if params[:auto_scroll].to_s == "true"
       @auto_scroll = true
@@ -124,7 +134,7 @@ class DeploymentsController < ApplicationController
   
   # sets @deployment
   def populate_deployment_and_fire
-    return Deployment.lock_and_fire do |deployment|
+    Deployment.lock_and_fire do |deployment|
       @deployment = deployment
       @deployment.attributes = params[:deployment]
       @deployment.prompt_config = params[:deployment][:prompt_config] rescue {}
@@ -132,5 +142,4 @@ class DeploymentsController < ApplicationController
       @deployment.user = current_user
     end
   end
-  
 end

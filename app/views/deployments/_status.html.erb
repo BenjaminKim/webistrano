@@ -6,7 +6,7 @@
         <b>Status:</b> <%=h @deployment.status %>
         <% if @deployment.cancelling_possible? %>
           &nbsp; &nbsp;
-          <%= link_to "Cancel", cancel_project_stage_deployment_path(current_project, current_stage, @deployment), :confirm => "Are you sure? Killing this deployment will not cleanup and rollback.", :method => "post", :class => 'arrow_link' %>
+              <%= link_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
         <% end %>
     	  <% if @deployment.completed? %>
           &nbsp; &nbsp;
@@ -22,7 +22,7 @@
   <div class="box_middle" style="height: 156px;">
 	<p>
     <b>Task:</b>
-	  <%=h @deployment.task %>
+	  <%=raw @deployment.task %>
 	</p>
 	<p>
 	  <b>Stage:</b>
@@ -54,14 +54,14 @@
 
 <fieldset class="fieldset">
   <legend>Comment</legend>
-  <%=web_friendly_text @deployment.description %>
+  <%=raw web_friendly_text @deployment.description %>
 </fieldset>
 <br /> <br />
 
 <fieldset class="fieldset">
   <legend>Log</legend>
   <div style="float:right; padding: 0px 5px 10px 0px; *padding: 0px"><input type="checkbox" class="noframe" id="auto_scroll_log" <%=h @auto_scroll ? 'checked="checked"' : ''%> > <label for="auto_scroll_log" class="redtext"><b>auto scroll</b></label></div>
-	<div class="log_output">
+	<div class="log_output" style="background-repeat:repeat-y; width:100%">
 		<pre><%=h @deployment.log.gsub('\n', "\n") rescue '' %></pre>
   </div>
 </fieldset>
@@ -84,7 +84,7 @@
       <% end %>
       <% if @deployment.cancelling_possible? %>
         &nbsp; &nbsp;
-        <%= link_to "Cancel", cancel_project_stage_deployment_path(current_project, current_stage, @deployment), :confirm => "Are you sure? Killing this deployment will not cleanup and rollback.", :method => "post", :class => 'arrow_link' %>
+          <%= link_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
       <% end %>
     </td>
   </tr>
@@ -97,7 +97,7 @@
   <script type="text/javascript">
     
     function update_status(){
-      new Ajax.Updater('status_info','<%=h project_stage_deployment_path(@project, @stage, @deployment) %>.js',{
+      new Ajax.Updater('status_info','<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>',{
         method: 'get',
         evalScripts: true,
         parameters: {
@@ -106,8 +106,15 @@
         }
       });
     }
+
+    function update_status_2() {
+        $.get('<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>', function(data) {
+            $('#status_info').html(data)
+            setTimeout(update_status_2, 3000)
+        })
+    }
     
-    setTimeout(update_status, 3000);
+    setTimeout(update_status_2, 3000);
     check_auto_scroll_log();
   </script>
 <% end %>

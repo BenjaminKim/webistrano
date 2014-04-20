@@ -27,6 +27,15 @@ class RolesController < ApplicationController
   # POST /projects/1/stages/1/roles
   # POST /projects/1/stages/1/roles.xml
   def create
+    if params[:role][:host_id].empty?
+      host = Host.find_by_name params[:host_new]
+      unless host
+        host = Host.new :name=>params[:host_new]
+        host.save
+      end
+      params[:role][:host_id] = host.id
+    end
+
     @role = @stage.roles.build(params[:role])
 
     respond_to do |format|
@@ -73,6 +82,6 @@ class RolesController < ApplicationController
   
   protected
   def load_host_choices
-    @host_choices = Host.find(:all, :order => "name ASC").collect {|h| [ h.name, h.id ] }
+    @host_choices = Host.order('name ASC').collect {|h| [ h.name, h.id ] }
   end
 end

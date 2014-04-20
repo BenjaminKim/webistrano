@@ -56,8 +56,9 @@ module Webistrano
     # actual writing of a msg to the DB
     def write_msg(msg)
       @deployment.reload
-      @deployment.transaction do 
+      @deployment.transaction do
         @deployment.log = (@deployment.log || '') + msg
+        @deployment.log = @deployment.log[-65535..-1] if @deployment.log.size > 65535
         @deployment.save!
       end
     end

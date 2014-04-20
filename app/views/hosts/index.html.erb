@@ -16,7 +16,7 @@
       <td><%=h host.roles.count %></td>
       <% if current_user.admin? %>
         <td><%= link_to 'Edit', edit_host_path(host) %></td>
-        <td><%= link_to 'Delete', host_path(host), :confirm => 'Are you sure?', :method => :delete %></td>
+        <td><%= link_to 'Delete', host_path(host) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure?'}, :method => :delete %></td>
       <% end %>
     </tr>
   <% end %>

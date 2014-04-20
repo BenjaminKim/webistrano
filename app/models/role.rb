@@ -88,7 +88,8 @@ class Role < ActiveRecord::Base
   
   # tells if this role had any deployment at all
   def deployed_at_least_once?
-    !self.deployments.empty?
+    #!self.deployments.empty?
+    self.deployments.count == 0
   end
   
   def status

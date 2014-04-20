@@ -55,7 +55,7 @@ class Deployment < ActiveRecord::Base
     end
     true
   rescue => e
-    RAILS_DEFAULT_LOGGER.debug "DEPLOYMENT: could not fire deployment: #{e.inspect} #{e.backtrace.join("\n")}"
+    logger.debug "DEPLOYMENT: could not fire deployment: #{e.inspect} #{e.backtrace.join("\n")}"
     false
   end
   
@@ -71,7 +71,7 @@ class Deployment < ActiveRecord::Base
   def effective_and_prompt_config
     @effective_and_prompt_config = @effective_and_prompt_config || self.stage.effective_configuration.collect do |conf|
       if prompt_config.has_key?(conf.name)
-        conf.value = prompt_config[conf.name] 
+        conf.value = prompt_config[conf.name]
       end
       conf
     end
@@ -133,12 +133,12 @@ class Deployment < ActiveRecord::Base
   
   # returns an unsaved, new deployment with the same task/stage/description
   def repeat
-    Deployment.new.tap do |d|
-      d.stage = self.stage
-      d.task = self.task
-      d.description = "Repetition of deployment #{self.id}: \n" 
-      d.description += self.description
-    end
+    deployment = Deployment.new
+    deployment.stage = self.stage
+    deployment.task = self.task
+    deployment.description = "Repetition of deployment #{self.id}: \n"
+    deployment.description += self.description
+    return deployment
   end
   
   # returns a list of hosts that this deployment

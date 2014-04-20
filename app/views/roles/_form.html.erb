@@ -21,10 +21,27 @@
   </table><br>
 </p>
 <p>
-  <b>Host</b><br />
-  <span class="<%= @role.errors.on('host') ? 'fieldWithErrors' : '' %>">
-  <%= select('role', 'host_id', @host_choices, { :include_blank => true }, {:style => 'width:250px;'}) %>
-  </span>
+  <table border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td colspan="2">
+        <b>Host</b><br />
+      </td>
+      <td>
+        <b>New Host</b><br />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span class="<%= @role.errors.get('host') ? 'fieldWithErrors' : '' %>">
+        <%= select('role', 'host_id', @host_choices, { :include_blank => true }, {:style => 'width:250px;'}) %>
+        </span>
+      </td>
+      <td  style="padding:0px;">&nbsp;<b>or</b>&nbsp;</td>
+      <td valign="bottom">
+		<%= text_field_tag 'host_new', nil, :style =>'width:250px;' %>
+      </td>
+    </tr>
+  </table><br>
 </p>
 <p>
   <b>Custom SSH Port</b> (leave blank for default)<br />

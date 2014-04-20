@@ -1,25 +1,28 @@
-<% form_tag sessions_path do -%>
-
+<%= form_tag action: :create do %>
   <fieldset class="fieldset">
     <legend>Webistrano login</legend>
     <div style="float: right; padding: 20px;">
       <%= image_tag('peritor_theme/webistrano_logo_large.png', :border => '0', :width => '400', :height => '130')%>
     </div>
     <div>
-      <p><label for="login">Login</label><br/>
-      <%= text_field_tag 'login' %></p>
-      <p><label for="password">Password</label><br/>
-      <%= password_field_tag 'password' %></p>
-      <p><%= check_box_tag 'remember_me', '1', {}, :class => 'noframe' %>
-      <label for="remember_me">Remember me</label></p>
-      <p>
-      <%= submit_tag 'Log in' %>
-      </p>
+        <p>
+            <%= label_tag :login %><br/>
+            <%= text_field_tag :login %>
+        </p>
+        <p>
+            <%= label_tag :password %><br/>
+            <%= password_field_tag :password %>
+        <p>
+            <%= check_box_tag :remember_me, '1', true, class: 'noframe' %>
+            <%= label_tag :remember_me %>
+        <p>
+            <%= submit_tag 'Log in' %>
+        </p>
     </div>
   </fieldset>
-<% end -%>
+<% end %>
 
 <% content_for(:page_title) do %>
-  <% @page_title = "Login" %>
-  <h2 style="color: #A40008; ">Welcome to Webistrano</h2>
+    <% @page_title = "Login" %>
+    <h2 style="color: #A40008; ">Welcome to Webistrano</h2>
 <% end %>

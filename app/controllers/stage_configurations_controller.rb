@@ -45,6 +45,7 @@ class StageConfigurationsController < ApplicationController
   def update
     @configuration = @stage.configuration_parameters.find(params[:id])
 
+    params[:configuration][:value].strip!
     respond_to do |format|
       if @configuration.update_attributes(params[:configuration])
         flash[:notice] = 'StageConfiguration was successfully updated.'
