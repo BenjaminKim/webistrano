@@ -17,11 +17,13 @@ class RolesController < ApplicationController
   # GET /projects/1/stages/1/roles/new
   def new
     @role = @stage.roles.new
+    render layout: false
   end
 
   # GET /projects/1/stages/1/roles/1;edit
   def edit
     @role = @stage.roles.find(params[:id])
+    render layout: false
   end
 
   # POST /projects/1/stages/1/roles

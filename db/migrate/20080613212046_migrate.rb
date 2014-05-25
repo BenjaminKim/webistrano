@@ -3,7 +3,7 @@ end
 
 class Migrate < ActiveRecord::Migration
   def self.up
-    User.update_all("time_zone = 'UTC'")
+    User.all.update_all(time_zone: 'UTC')
   end
 
   def self.down

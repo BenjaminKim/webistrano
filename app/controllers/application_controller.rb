@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
     if logged_in? && current_user.admin?
       return true
     else
-      flash[:notice] = "Action not allowed"
+      flash[:notice] = 'Action not allowed'
       redirect_to root_path
       return false
     end
@@ -66,7 +66,7 @@ class ApplicationController < ActionController::Base
 
   def build_menu_tree
     project_branch = {
-        name: I18n.t('projects.title'),
+        name: I18n.t('helpers.projects'),
         link: projects_path,
         id: 'projects-branch'
     }
@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
     end
 
     host_branch = {
-        name: I18n.t('hosts.title'),
+        name: I18n.t('helpers.hosts'),
         link: hosts_path,
         id: 'hosts-branch'
     }
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
     end
 
     recipe_branch = {
-        name: I18n.t('recipes.title'),
+        name: I18n.t('helpers.recipes'),
         link: recipes_path,
         id: 'recipes-branch'
     }

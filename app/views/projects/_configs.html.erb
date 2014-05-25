@@ -9,9 +9,10 @@
     </thead>
     <tbody>
     <% for config in @project.configuration_parameters %>
+        <% filtered_config = hide_password_in_value(config) %>
         <tr>
-            <td><%= config.name.truncate(25) %></td>
-            <td><%= hide_password_in_value(config).truncate(80) %></td>
+            <td title="<%= config.name %>"><%= config.name.truncate(25) %></td>
+            <td title="<%= filtered_config %>"><%= filtered_config.truncate(80) %></td>
             <td><%= config.prompt_status_in_html %></td>
             <td align="right">
                 <%= edit_button_for_ajax edit_project_project_configuration_path(@project, config) %>
@@ -21,17 +22,3 @@
     <% end %>
     </tbody>
 </table>
-
-<!--"?authenticity_token=#{form_authenticity_token}"-->
-
-<!-- Modal -->
-<div class="modal fade" id="project-configuration-window" tabindex="-1" role="dialog" aria-hidden="true">
-</div>
-
-<script>
-    function open_modal_project_configuration(url) {
-        $("#project-configuration-window").load(url, function(result){
-            $("#project-configuration-window").modal({show: true})
-        });
-    };
-</script>

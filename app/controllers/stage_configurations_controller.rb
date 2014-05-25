@@ -16,11 +16,13 @@ class StageConfigurationsController < ApplicationController
   # GET /project/1/stage/1/stage_configurations/new
   def new
     @configuration = @stage.configuration_parameters.new
+    render layout: false
   end
 
   # GET /project/1/stage/1/stage_configurations/1;edit
   def edit
     @configuration = @stage.configuration_parameters.find(params[:id])
+    render layout: false
   end
 
   # POST /project/1/stage/1/stage_configurations

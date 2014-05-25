@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
         
         @project.clone(@original) if load_clone_original
         
-        flash[:notice] = I18n.t 'info.create.success', model: I18n.t('projects.title')
+        flash[:notice] = I18n.t 'info.create.success', model: I18n.t('helpers.project')
         format.html { redirect_to project_url(@project) }
         format.xml  { head :created, :location => project_url(@project) }
       else

@@ -1,5 +1,5 @@
 class NotificationMailer < ActionMailer::Base
-  default from: "webistrano@webistrano.com"
+  default from: "webistrano@iwilab.com"
 
   def deployment(deployment, email)
     hash = {

@@ -124,6 +124,6 @@ ActiveRecord::Schema.define(version: 20090319185505) do
     t.datetime "disabled"
   end
 
-  add_index "users", ["disabled"], name: "index_users_on_disabled"
+  add_index "users", ["disabled"], name: "index_users_on_disabled", using: :btree
 
 end

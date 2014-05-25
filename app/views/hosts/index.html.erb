@@ -3,28 +3,28 @@
         <!-- Default panel contents -->
         <div class="panel-heading">
             <div class="row">
-                <div class="col-md-6"><%= "#{pluralize(Host.count, 'Host')} listed" %></div>
+                <div class="col-md-6"><%= "#{pluralize(@count, I18n.t('helpers.host'))} listed" %></div>
                 <div class="col-md-6"></div>
             </div>
         </div>
 
         <table class="table">
-            <tbhead>
-                <tr>
-                    <th>Name</th>
-                    <th>#Stages</th>
-                    <th>#Roles</th>
-                </tr>
-            </tbhead>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>#Stages</th>
+                <th>#Roles</th>
+                <th></th>
+            </tr>
+            </thead>
             <tbody>
-            <% for host in @hosts %>
+            <% @hosts.each do |host| %>
                 <tr>
-                    <td><%= host.name %></td>
+                    <td><%= link_to host.name, host_path(host) %></td>
                     <td><%= host.stages.count %></td>
                     <td><%= host.roles.count %></td>
                     <% if current_user.admin? %>
                         <td align="right">
-                            <%= view_button_for_ajax host_path(host) %>
                             <%= edit_button_for_ajax edit_host_path(host) %>
                             <%= delete_button_for_ajax host_path(host), host.name %>
                         </td>
@@ -35,24 +35,33 @@
         </table>
     </div>
 
-    <div class="form-horizontal col-md-offset-3">
-        <div class="col-md-6 form-group">
-            <label class="col-sm-2 control-label">Search</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="search">
-            </div>
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="pagination" style="margin: 0">
+                <% start_page, end_page, before_pivot, after_pivot = pager_calculater(@page, @page_max) %>
+                <% if start_page > 1 %>
+                    <li><a href="<%= hosts_path(page: before_pivot) %>">&#8230;</a></li>
+                <% end %>
+                <% (start_page...end_page).each do |i| %>
+                    <li <%= 'class=active' if @page == i %>>
+                        <a href="<%= hosts_path(page: i) %>"><%= i %></a>
+                    </li>
+                <% end %>
+                <% if end_page < @page_max %>
+                    <li><a href="<%= hosts_path(page: after_pivot) %>">&#8230;</a></li>
+                <% end %>
+            </ul>
         </div>
-    </div>
-    <div class="col-md-6">
-        <ul class="pagination">
-            <li><%= link_to '«', '' %></li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
-        </ul>
+        <div class="col-md-4">
+            <%= form_tag hosts_search_path, method: :get do %>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="key">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><%= I18n.t 'helpers.search' %></button>
+                    </span>
+                </div><!-- /input-group -->
+            <% end %>
+        </div>
     </div>
 </fieldset>
 
@@ -63,5 +72,5 @@
 <% end %>
 
 <% content_for(:page_title) do %>
-    <%= page_title_helper(I18n.t('hosts.title'), new_button_for_ajax(new_host_path)) %>
+    <%= page_title_helper(I18n.t('helpers.hosts'), new_button_for_ajax(new_host_path)) %>
 <% end %>

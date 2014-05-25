@@ -3,10 +3,7 @@ Webistrano::Application.routes.draw do
 
   get 'hosts/search', to: 'hosts#search'
   resources :hosts
-  resources :recipes  do
-    # data가 너무 길어 get으로 보내기 어려워서 post를 사용.
-    post 'preview', on: :collection
-  end
+  resources :recipes
 
   resources :projects do
     resources :project_configurations
@@ -16,7 +13,7 @@ Webistrano::Application.routes.draw do
         get 'capfile'
         match 'recipes', via: :all
         get 'tasks'
-        match 'copy', via: :all
+        post 'clone'
       end
       resources :stage_configurations
       resources :roles

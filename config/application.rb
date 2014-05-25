@@ -31,7 +31,7 @@ module Webistrano
     # Make Active Record use UTC-base instead of local time
     config.time_zone = 'UTC'
 
-    initializer "webistrano.load" do
+    initializer 'webistrano.load' do
       require 'webistrano'
     end
   end

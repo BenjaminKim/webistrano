@@ -1,4 +1,4 @@
-<table class="table no-strip">
+<table class="table">
     <tr>
         <td style="width: 10%;border: none"><b>Description</b></td>
         <td style="border: none"><%= @project.description %></td>
@@ -20,7 +20,7 @@
 <br>
 <legend>
     <div class="row">
-        <div class="col-md-6"><strong><%= I18n.t 'helpers.titles.project_configuration' %></strong></div>
+        <div class="col-md-6"><strong><%= I18n.t 'projects.configuation' %></strong></div>
         <div class="col-md-6" align="right"><%= new_button_for_ajax new_project_project_configuration_path(current_project) %></div>
     </div>
 </legend>
@@ -29,7 +29,7 @@
 <br>
 <legend>
     <div class="row">
-        <div class="col-md-6"><strong><%= I18n.t 'helpers.titles.stage' %></strong></div>
+        <div class="col-md-6"><strong><%= I18n.t 'helpers.stage' %></strong></div>
         <div class="col-md-6" align="right"><%= new_button_for_ajax new_project_stage_path(current_project) %></div>
     </div>
 </legend>
@@ -53,7 +53,7 @@
         <div class="col-md-6" align="right">
             <%= edit_button_for_ajax edit_project_path(current_project) %>
             <%= clone_button_for_ajax clone_form_path(current_project) %>
-            <%= delete_button_for_ajax project_path(), @project.name %>
+            <%= delete_button_for_ajax project_path, @project.name %>
         </div>
     </div>
 <% end %>

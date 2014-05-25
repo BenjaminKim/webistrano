@@ -1,7 +1,5 @@
 class RecipesController < ApplicationController
-  before_filter :ensure_admin, :only => [:new, :edit, :destroy, :create, :update]
-  skip_before_filter :verify_authenticity_token, :only => [:preview]
-
+  before_filter :ensure_admin, only: [:new, :edit, :destroy, :create, :update]
 
   # GET /recipes
   # GET /recipes.xml
@@ -79,15 +77,6 @@ class RecipesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to recipes_url }
       format.xml  { head :ok }
-    end
-  end
-  
-  def preview
-    @recipe = Recipe.new(params[:recipe])
-    respond_to do |format|
-      format.html {
-        render partial: 'preview', locals: { recipe: @recipe }, layout: false
-      }
     end
   end
   

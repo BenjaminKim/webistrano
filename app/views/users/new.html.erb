@@ -1,14 +1,19 @@
-<%= form_for :user, :url => users_path do |f| %>
-  <%= render(:partial => 'form')%>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.new', model: (I18n.t 'helpers.user') %></h4>
+        </div>
 
-  <%= link_to 'Back to users', users_path, :class => 'arrow_link ontheright', :style => 'margin-right: 330px' %>
+        <%= form_for(:user, url: users_path) do |f| %>
+            <div class="modal-body">
+                <%= render(partial: 'form')%>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.close'%></button>
+                <%= submit_tag (I18n.t 'helpers.create'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>
 
-  <p>
-    <%= submit_tag "Create user" %>
-  </p>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "New user" %>
-  <h2>New user</h2>
-<% end %>

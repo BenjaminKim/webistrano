@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.observe_field
 //= require bootstrap
 
 // open a new window

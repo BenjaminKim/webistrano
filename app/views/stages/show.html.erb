@@ -1,122 +1,131 @@
 <div class="special_box">
-  <div class="special_box_top"></div>
-  <div class="special_box_middle deployments_box">
-   <p><%= link_to 'Deploy', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy', :class => 'arrow_link' %></p>
-   <p><%= link_to 'Deploy and migrate', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:migrations', :class => 'arrow_link' %></p>
-   <p><%= link_to 'Restart app servers', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:restart', :class => 'arrow_link' %></p>
-   <p><%= link_to 'Setup', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:setup', :class => 'arrow_link' %></p>
-   <p>
-     <%= select_tag('task', options_for_select(@task_list)) %>
-   </p>
-   <p>
-     <%= link_to 'Execute', new_project_stage_deployment_path(current_project, @stage), :class => 'arrow_link', 
-         :onclick => "location.href='#{new_project_stage_deployment_path(current_project, @stage)}?task=' + $F('task'); return false" %> |
-     <%= link_to 'Info', tasks_project_stage_path(current_project, @stage), :class => 'arrow_link',
-         :onclick => "location.href='#{tasks_project_stage_path(current_project, @stage)}#' + $F('task'); return false" %>
-   </p>
+    <div class="special_box_top"></div>
+    <div class="special_box_middle deployments_box">
+        <p><%= link_to 'Deploy', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy' %></p>
+        <p><%= link_to 'Deploy and migrate', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:migrations' %></p>
+        <p><%= link_to 'Restart app servers', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:restart' %></p>
+        <p><%= link_to 'Setup', new_project_stage_deployment_path(current_project, @stage) + '?task=deploy:setup' %></p>
+        <p>
+            <%= select_tag('task', options_for_select(@task_list)) %>
+        </p>
+        <p>
+            <%= link_to 'Execute', new_project_stage_deployment_path(current_project, @stage),
+                        onclick: "location.href='#{new_project_stage_deployment_path(current_project, @stage)}?task=' + $('#task').val(); return false" %> |
+            <%= link_to 'Info', tasks_project_stage_path(current_project, @stage), :class => 'arrow_link',
+                        onclick: "location.href='#{tasks_project_stage_path(current_project, @stage)}#' + $('#task').val(); return false" %>
+        </p>
     </div>
-  <div class="special_box_bottom"></div>
+    <div class="special_box_bottom"></div>
 </div>
 
-<div class="box">
-  <div class="box_top"></div>
-  <div class="box_middle">
-	  <p>
-	    <b>Name:</b>
-		   <%=h @stage.name %>
-		</p>
-		<p>
-		  <b>Project:</b>
-		  <%= link_to h(@stage.project.name), project_url(current_project) %>
-		</p>
-		<p>
-		  <b>Alert on deploy:</b>
-		  <%=h @stage.alert_emails %>
-		</p>
-		<p>
-		  <b>#Hosts:</b>
-		  <%=h @stage.hosts.count %>
-		</p>
-		<br />
-		<%= link_to 'Copy stage', copy_project_stage_path(current_project, @stage), :class => 'arrow_link' %> | 
-		<%= link_to 'Edit stage', edit_project_stage_path(current_project, @stage), :class => 'arrow_link' %> | 
-		<%= link_to 'Delete stage', project_stage_path(current_project, @stage) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :delete, :class => 'arrow_link'  %> <br />
-		<%= link_to 'Export capfile', {:action => 'capfile', :project_id => current_project, :id => @stage}, {:onclick => "loadWindow('#{url_for(:action => 'capfile', :project_id => current_project, :id => @stage)}'); return false", :class => 'arrow_link'} %>
-	</div>	
-  <div class="box_bottom"></div>
-</div>
-
+<!--TODO-->
+<!--special_box의 크기를 계산해서 width를 정해야함.-->
+<table class="table" style="width: 70%;">
+    <tr>
+        <td style="width: 10%;border: none"><b><%= I18n.t 'helpers.name' %></b></td>
+        <td style="border: none"><%= @stage.name %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b><%= I18n.t 'helpers.project' %></b></td>
+        <td><%= link_to @stage.project.name, project_url(current_project) %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b>#<%= I18n.t 'helpers.hosts' %></b></td>
+        <td><%= @stage.hosts.count %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b>Alert on deploy</b></td>
+        <td><%= @stage.alert_emails %></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
 
 <div class="clear"></div>
 <br>
 
-<fieldset class="fieldset">
-  <legend>Stage specific configuration</legend>
-  <%= render(:partial => 'configs')%>
-  <br />
-  <div id="effective_config" style="display:none;">
-    <%= render(:partial => 'effective_config')%>
-    <br />
-  </div>
-  <%= link_to 'New configuration', new_project_stage_stage_configuration_path(current_project, @stage), :class => 'arrow_link' %> | 
-  <a id="s_e_c" href="#" onclick="show_effective_config(); return false" class="arrow_link">Show effective configuration</a>
-  <a id="h_e_c" href="#" onclick="hide_effective_config(); return false" class="arrow_link" style="display:none;">Hide effective configuration</a>
-</fieldset>
 
-<br /><br />
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#s_s_c">Stage specific configuration</a></li>
+    <li><a data-toggle="tab" href="#h_c">Effective configuration</a></li>
+</ul>
 
-<fieldset class="fieldset">
-  <legend>Used recipes</legend>
-  <%= render(:partial => 'recipes')%>
-  <br />
-  <%= link_to 'Manage stage recipes', {:action => 'recipes', :project_id => current_project, :id => @stage} , :class => 'arrow_link'%>
-</fieldset>
+<div class="tab-content">
+    <div class="tab-pane active" id="s_s_c">
+        <%= render(partial: 'configs')%>
+    </div>
+    <div class="tab-pane" id="h_c">
+        <%= render(partial: 'effective_config')%>
+    </div>
+</div>
 
-<br /><br />
+<br><br>
 
 <fieldset class="fieldset">
-  <legend>Deployed hosts</legend>
-  <%= render(:partial => 'roles')%>
-  <br />
-  <%= link_to 'Add host', new_project_stage_role_path(current_project, @stage) , :class => 'arrow_link'%>
+    <legend>
+        <div class="row">
+            <div class="col-md-6"><strong>Used recipes</strong></div>
+            <div class="col-md-6" align="right">
+                <a href="#" onclick="loadWindow('<%= capfile_project_stage_path(current_project, @stage) %>'); return false" class="btn btn-xs btn-success">
+                    <i class="glyphicon glyphicon-eye-open"></i><%= I18n.t 'helpers.view' %>
+                </a>
+                <%= edit_button(recipes_project_stage_path(current_project, @stage)) %>
+            </div>
+        </div>
+    </legend>
+    <%= render(partial: 'recipes')%>
 </fieldset>
 
-<br /><br />
+<br><br>
 
 <fieldset class="fieldset">
-  <legend>Recent deployment history</legend>
-  <%= render(:partial => 'deployments')%>
+    <legend>
+        <div class="row">
+            <div class="col-md-6"><strong>Deployed hosts</strong></div>
+            <div class="col-md-6" align="right">
+                <%= new_button_for_ajax new_project_stage_role_path(@project, @stage) %>
+            </div>
+        </div>
+    </legend>
+    <%= render(partial: 'roles')%>
 </fieldset>
 
-<br />
-<% content_for(:page_scripts) do %>
- <script type="text/javascript">
- 
-   function show_effective_config(){
-     $('h_e_c').show();
-     $('s_e_c').hide();
-     $('effective_config').show();
-   }
-   
-   function hide_effective_config(){
-      $('h_e_c').hide();
-      $('s_e_c').show();
-      $('effective_config').hide();
-    }
- </script>
-<% end %>
+<br><br>
+
+<fieldset class="fieldset">
+    <legend>
+        <div class="row">
+            <div class="col-md-6"><strong>Recent deployment history</strong></div>
+            <div class="col-md-6" align="right">
+                <% if @stage.deployments.count > 1 %>
+                    <a href="<%= project_stage_deployments_path(current_project, @stage) %>" class="btn btn-xs btn-info">
+                        <i class="glyphicon glyphicon-eye-open"></i>All
+                    </a>
+                <% end %>
+            </div>
+        </div>
+    </legend>
+    <%= render(partial: 'deployments')%>
+</fieldset>
 
 <% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Back to project", project_path(@project), :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Projects", projects_path %> &gt; 
-    Project <%= link_to current_project.name, project_path(current_project) %> &gt; 
-    Stage <%= link_to current_stage.name, project_stage_path(current_project, current_stage) %>
-  <% end %>
+    <% breadcrumb_box do %>
+        <%= link_to 'Back to project', project_path(@project), style: 'float:right' %>
+        <%= link_to 'Projects', projects_path %> &gt;
+        Project <%= link_to current_project.name, project_path(current_project) %> &gt;
+        Stage <%= link_to current_stage.name, project_stage_path(current_project, current_stage) %>
+    <% end %>
 <% end %>
 
 <% content_for(:page_title) do %>
-  <% @page_title = "Project #{h(current_project.name)} - Stage #{h(@stage.name)}"%>
-  <h2>Stage <%= link_to h(@stage.name), project_stage_path(current_project, @stage) %></h2>
+    <div class="row">
+        <div class="col-md-6"><span class="label label-primary"><%= @stage.name %></span></div>
+        <div class="col-md-6" align="right">
+            <%= edit_button_for_ajax edit_project_stage_path(current_project, @stage) %>
+            <%= clone_button_for_ajax clone_project_stage_path(current_project, @stage) %>
+            <%= delete_button_for_ajax project_stage_path(current_project, @stage), @stage.name %>
+        </div>
+    </div>
 <% end %>
-

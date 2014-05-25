@@ -28,15 +28,15 @@ class StagesController < ApplicationController
     render layout: false
   end
 
-  def copy
+  def clone
     @stage = current_project.stages.find(params[:id])
     if request.post?
       name = params[:stage][:name] rescue []
       stage = current_project.stages.new
       stage.name = name
       unless stage.save
-        flash[:error] = "Stage recipes copy failure."
-        redirect_to copy_project_stage_url(current_project, @stage)
+        flash[:error] = 'Stage recipes clone failure.'
+        redirect_to clone_project_stage_url(current_project, @stage)
         return
       end
 
@@ -53,9 +53,10 @@ class StagesController < ApplicationController
       end
       stage.save
 
-      flash[:notice] = "Stage recipes successfully copied."
+      flash[:notice] = 'Stage recipes successfully copied.'
       redirect_to project_stage_url(current_project, stage)
     else
+      render layout: false
     end
   end
 

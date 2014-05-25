@@ -6,27 +6,27 @@
   <div style="padding-top: 5px;">
    Welcome to Webistrano. Your first steps should be to create a project with a stage.
    This stage can then be deployed once you made at least one host known to Webistrano.
-   <br /><br />
+   <br><br>
    For help and more documentation, see
-   <br />
+   <br>
    <ul>
      <li><a href="http://labs.peritor.com/webistrano/">Wiki</a></li>
      <li><a href="http://labs.peritor.com/webistrano/wiki/ConfigurationParameter">Configuration Parameter</a></li>
      <li><a href="http://labs.peritor.com/webistrano/wiki/FAQ">FAQ</a></li>
    </ul>
-   <br />
+   <br>
    Webistrano is Open Source. Paid support is available by <a href="http://www.peritor.com">Peritor Consulting</a>.
   </div>
 </fieldset>
 
-<br />
+<br>
 
 <fieldset class="fieldset">
   <legend>Recent deployments</legend>
   <% if @deployments.empty? %>
-    <br/>
+    <br>
       No recent deployments.
-    <br/>
+    <br>
   <% else %>
     <% @deployments.each do |deployment| %>
       <%= render(:partial => 'deployments/list_item', :locals => {:deployment => deployment}) %>
@@ -34,7 +34,7 @@
   <% end %>
 </fieldset>
 
-<br />
+<br>
 
 <% content_for(:page_title) do %>
   <% @page_title = "Welcome to Webistrano" %>

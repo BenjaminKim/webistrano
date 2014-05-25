@@ -1,34 +1,58 @@
 en:
   helpers:
-    actions: "Actions"
     links:
-      back: "Back"
-      cancel: "Cancel"
       confirm: "Are you sure?"
-      delete: "Delete"
-      new: "New"
-      edit: "Edit"
-      clone: "Clone"
-      view: "View"
+
     titles:
       edit: "Edit %{model}"
       clone: "Clone %{model}"
       save: "Save %{model}"
       new: "New %{model}"
       delete: "Delete %{model}"
-      stage: 'Stage'
-      project_configuration: 'Project Configuration'
-    form:
-      update: 'Update'
-      create: 'Create'
-      close: 'Close'
-      clone: 'Clone'
+
+    name: "Name"
+    value: Value
+    prompt: Prompt
+    note: Note
+    description: "Description"
+    revision: "Revision"
+    search: "Search"
+    actions: "Actions"
+    back: "Back"
+    cancel: "Cancel"
+    delete: "Delete"
+    new: "New"
+    edit: "Edit"
+    clone: "Clone"
+    view: "View"
+    update: 'Update'
+    create: 'Create'
+    close: 'Close'
+    clone: 'Clone'
+
+    capfile: Capfile
+    project: Project
+    projects: Projects
+    stage: Stage
+    stages: Stages
+    host: Host
+    hosts: Hosts
+    recipe: Recipe
+    recipes: Recipes
+    user: User
+    users: Users
+    deployment: Deployment
+    deployments: Deployments
+    configuration: Configuration
+
+    login: "Login"
+    email: "Email"
+    disable: "Disable"
+    enable: "Enable"
   projects:
-    title: Projects
-  hosts:
-    title: Hosts
-  recipes:
-    title: Recipe
+    configuation: 'Project Configuration'
   info:
     create:
       success: '%{model} was successfully created.'
+
+

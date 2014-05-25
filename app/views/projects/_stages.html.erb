@@ -8,13 +8,12 @@
     </tr>
     </thead>
     <tbody>
-    <% for stage in @project.stages %>
-        <tr class="<%= cycle :even, :odd, :name => 'stages' %>">
-            <td><%= h(stage.name) %></td>
-            <td><%=h stage.hosts.count  %></td>
-            <td><%=h stage.deployments.count %></td>
+    <% @project.stages.each do |stage| %>
+        <tr>
+            <td><%= link_to stage.name, project_stage_path(@project, stage) %></td>
+            <td><%= stage.hosts.count  %></td>
+            <td><%= stage.deployments.count %></td>
             <td align="right">
-                <%= view_button_for_ajax project_stage_path(@project, stage) %>
                 <%= edit_button_for_ajax edit_project_stage_path(@project, stage) %>
                 <%= delete_button_for_ajax project_stage_path(@project, stage), stage.name %>
             </td>

@@ -1,96 +1,91 @@
 <% flashed_errors(:role) %>
 <p>
-  <table border="0" cellpadding="0" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <td colspan="2">
-        <b>Role</b><br />
-	  </td>
-      <td >
-        <b>Custom Role</b><br />
-	  </td>
-	</tr>
-	<tr>
-	  <td>
-        <%= select('role', 'name', Role::DEFAULT_NAMES, { :include_blank => true }, {:style => 'width:250px;'}) %>
-      </td>
-      <td  style="padding:0px;">&nbsp;<b>or</b>&nbsp;</td>
-      <td valign="bottom">
-		<%= text_field 'role', 'custom_name', :style =>'width:250px;' %>
-      </td>
+        <td colspan="2">
+            <b>Role</b><br>
+        </td>
+        <td >
+            <b>Custom Role</b><br>
+        </td>
     </tr>
-  </table><br>
+    <tr>
+        <td>
+            <%= select('role', 'name', Role::DEFAULT_NAMES, { :include_blank => true }, {:style => 'width:250px;'}) %>
+        </td>
+        <td  style="padding:0px;">&nbsp;<b>or</b>&nbsp;</td>
+        <td valign="bottom">
+            <%= text_field 'role', 'custom_name', style: 'width:250px;' %>
+        </td>
+    </tr>
+</table><br>
 </p>
 <p>
-  <table border="0" cellpadding="0" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0">
     <tr>
-      <td colspan="2">
-        <b>Host</b><br />
-      </td>
-      <td>
-        <b>New Host</b><br />
-      </td>
+        <td colspan="2">
+            <b>Host</b><br>
+        </td>
+        <td>
+            <b>New Host</b><br>
+        </td>
     </tr>
     <tr>
-      <td>
+        <td>
         <span class="<%= @role.errors.get('host') ? 'fieldWithErrors' : '' %>">
         <%= select('role', 'host_id', @host_choices, { :include_blank => true }, {:style => 'width:250px;'}) %>
         </span>
-      </td>
-      <td  style="padding:0px;">&nbsp;<b>or</b>&nbsp;</td>
-      <td valign="bottom">
-		<%= text_field_tag 'host_new', nil, :style =>'width:250px;' %>
-      </td>
+        </td>
+        <td  style="padding:0px;">&nbsp;<b>or</b>&nbsp;</td>
+        <td valign="bottom">
+            <%= text_field_tag 'host_new', nil, style: 'width:250px;' %>
+        </td>
     </tr>
-  </table><br>
+</table><br>
 </p>
 <p>
-  <b>Custom SSH Port</b> (leave blank for default)<br />
-  <%= text_field 'role', 'ssh_port', :style =>'width:50px;' %>
+    <b>Custom SSH Port</b> (leave blank for default)<br>
+    <%= text_field 'role', 'ssh_port', style: 'width:50px;' %>
 </p>
 <p>
-  <b>Primary</b> (tick this for the DB master)<br />
-  <%= check_box 'role', 'primary', :style =>'' %>
+    <b>Primary</b> (tick this for the DB master)<br>
+    <%= check_box 'role', 'primary' %>
 </p>
 <p>
-  <b>No release</b> (tick this if you do not want any checkouts on this host)<br />
-  <%= check_box 'role', 'no_release', :style =>'' %>
+    <b>No release</b> (tick this if you do not want any checkouts on this host)<br>
+    <%= check_box 'role', 'no_release' %>
 </p>
 <p>
-  <b>No symlink</b> (tick this if you do not want to update the <i>current</i> symlink)<br />
-  <%= check_box 'role', 'no_symlink', :style =>'' %>
+    <b>No symlink</b> (tick this if you do not want to update the <i>current</i> symlink)<br>
+    <%= check_box 'role', 'no_symlink' %>
 </p>
 
-<% content_for(:page_scripts) do %>
-  <script type="text/javascript">
-  
-    Event.observe(window, 'load', function(){
-      role_name();
-      Event.observe('role_name', 'change', role_name);
-      Event.observe('role_custom_name', 'change', role_custom_name);
+<script>
+    $(window).ready(function() {
+        role_name();
+        $("#role_name").change(role_name);
+        $("#role_custom_name").change(role_custom_name);
     });
 
-  
     function role_name(){
-      var name = $('role_name');
-      var custom_name = $('role_custom_name');
-      
-      if(name.value != ''){
-        custom_name.disable();
-      } else {
-        custom_name.enable();
-      }
+        var name = $('#role_name');
+        var custom_name = $('#role_custom_name');
+
+        if(name.val() != ''){
+            custom_name.attr('disabled', true);
+        } else {
+            custom_name.attr('disabled', false);
+        }
     }
-    
+
     function role_custom_name(){
-      var name = $('role_name');
-      var custom_name = $('role_custom_name');
-      
-      if(custom_name.value != ''){
-        name.disable();
-      } else {
-        name.enable();
-      }
+        var name = $('#role_name');
+        var custom_name = $('#role_custom_name');
+
+        if(custom_name.val() != ''){
+            name.attr('disabled', true);
+        } else {
+            name.attr('disabled', false);
+        }
     }
-  
-  </script>
-<% end %>
+</script>

@@ -5,5 +5,4 @@ log/*
 *.tmproj
 *.iml
 .idea/*
-webistrano_development
-webistrano_production
+unicorn.socket

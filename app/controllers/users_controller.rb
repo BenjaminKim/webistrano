@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   def new
     # render new.rhtml
     @user = User.new
+    render layout: false
   end
 
   # POST /users
@@ -50,6 +51,7 @@ class UsersController < ApplicationController
   # GET /users/edit/1
   def edit
     @user = User.find(params[:id])
+    render layout: false
   end
   
   # PUT /users/1

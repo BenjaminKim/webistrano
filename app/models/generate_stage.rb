@@ -1,0 +1,345 @@
+class GenerateStage
+  def execute
+project_id = 29
+
+host_names = {
+:ac_talk => [
+	%w(
+	ken179.kr.iwilab.com
+	ken182.kr.iwilab.com
+	sun092.kr.iwilab.com
+	sun093.kr.iwilab.com
+	sun104.kr.iwilab.com
+	),
+	%w(
+	sun060.kr.iwilab.com
+	sun063.kr.iwilab.com
+	sun064.kr.iwilab.com
+	sun108.kr.iwilab.com
+	sun119.kr.iwilab.com
+	),
+	%w(
+	vega035.kr.iwilab.com
+	vega036.kr.iwilab.com
+	vega037.kr.iwilab.com
+	vega038.kr.iwilab.com
+	vega039.kr.iwilab.com
+	)
+],
+:ch_talk => [
+	%w(
+ken080.kr.iwilab.com
+ken081.kr.iwilab.com
+ken082.kr.iwilab.com
+ken083.kr.iwilab.com
+ken084.kr.iwilab.com
+ken090.kr.iwilab.com
+ken091.kr.iwilab.com
+ken092.kr.iwilab.com
+ken093.kr.iwilab.com
+ken101.kr.iwilab.com
+ken102.kr.iwilab.com
+ken103.kr.iwilab.com
+ken104.kr.iwilab.com
+ken180.kr.iwilab.com
+ken181.kr.iwilab.com
+ken193.kr.iwilab.com
+ken199.kr.iwilab.com
+ken200.kr.iwilab.com
+ken201.kr.iwilab.com
+ken202.kr.iwilab.com
+ken203.kr.iwilab.com
+sun088.kr.iwilab.com
+sun101.kr.iwilab.com
+sun102.kr.iwilab.com
+sun106.kr.iwilab.com
+sun107.kr.iwilab.com
+vega111.kr.iwilab.com
+vega112.kr.iwilab.com
+vega113.kr.iwilab.com
+vega114.kr.iwilab.com
+vega155.kr.iwilab.com
+vega156.kr.iwilab.com
+vega157.kr.iwilab.com
+vega158.kr.iwilab.com
+vega159.kr.iwilab.com
+vega160.kr.iwilab.com
+vega161.kr.iwilab.com
+vega162.kr.iwilab.com
+vega175.kr.iwilab.com
+vega176.kr.iwilab.com
+vega177.kr.iwilab.com
+vega178.kr.iwilab.com
+vega215.kr.iwilab.com
+vega216.kr.iwilab.com
+vega217.kr.iwilab.com
+vega218.kr.iwilab.com
+vega219.kr.iwilab.com
+vega230.kr.iwilab.com
+vega231.kr.iwilab.com
+vega232.kr.iwilab.com
+vega233.kr.iwilab.com
+vega234.kr.iwilab.com
+vega245.kr.iwilab.com
+vega246.kr.iwilab.com
+vega247.kr.iwilab.com
+vega248.kr.iwilab.com
+vega249.kr.iwilab.com
+vega271.kr.iwilab.com
+vega272.kr.iwilab.com
+vega273.kr.iwilab.com
+vega274.kr.iwilab.com
+vega275.kr.iwilab.com
+vega286.kr.iwilab.com
+vega287.kr.iwilab.com
+vega288.kr.iwilab.com
+vega289.kr.iwilab.com
+vega290.kr.iwilab.com
+),
+%w(
+ken056.kr.iwilab.com
+ken057.kr.iwilab.com
+ken078.kr.iwilab.com
+ken109.kr.iwilab.com
+ken110.kr.iwilab.com
+ken184.kr.iwilab.com
+ken185.kr.iwilab.com
+ken186.kr.iwilab.com
+ken187.kr.iwilab.com
+ken188.kr.iwilab.com
+ken194.kr.iwilab.com
+ken195.kr.iwilab.com
+ken196.kr.iwilab.com
+ken197.kr.iwilab.com
+ken198.kr.iwilab.com
+ken209.kr.iwilab.com
+ken210.kr.iwilab.com
+ken211.kr.iwilab.com
+ken212.kr.iwilab.com
+ken213.kr.iwilab.com
+ken214.kr.iwilab.com
+ken222.kr.iwilab.com
+ken223.kr.iwilab.com
+vega165.kr.iwilab.com
+vega166.kr.iwilab.com
+vega167.kr.iwilab.com
+vega168.kr.iwilab.com
+vega169.kr.iwilab.com
+vega170.kr.iwilab.com
+vega171.kr.iwilab.com
+vega172.kr.iwilab.com
+vega173.kr.iwilab.com
+vega174.kr.iwilab.com
+vega179.kr.iwilab.com
+vega180.kr.iwilab.com
+vega181.kr.iwilab.com
+vega182.kr.iwilab.com
+vega183.kr.iwilab.com
+vega184.kr.iwilab.com
+vega185.kr.iwilab.com
+vega186.kr.iwilab.com
+vega220.kr.iwilab.com
+vega221.kr.iwilab.com
+vega222.kr.iwilab.com
+vega223.kr.iwilab.com
+vega224.kr.iwilab.com
+vega235.kr.iwilab.com
+vega236.kr.iwilab.com
+vega237.kr.iwilab.com
+vega238.kr.iwilab.com
+vega239.kr.iwilab.com
+vega250.kr.iwilab.com
+vega251.kr.iwilab.com
+vega252.kr.iwilab.com
+vega253.kr.iwilab.com
+vega254.kr.iwilab.com
+vega291.kr.iwilab.com
+vega292.kr.iwilab.com
+vega293.kr.iwilab.com
+vega294.kr.iwilab.com
+vega295.kr.iwilab.com
+),
+%w(
+ken039.kr.iwilab.com
+ken040.kr.iwilab.com
+ken041.kr.iwilab.com
+ken042.kr.iwilab.com
+ken043.kr.iwilab.com
+ken044.kr.iwilab.com
+ken045.kr.iwilab.com
+ken076.kr.iwilab.com
+ken077.kr.iwilab.com
+vega058.kr.iwilab.com
+vega059.kr.iwilab.com
+vega060.kr.iwilab.com
+vega061.kr.iwilab.com
+vega062.kr.iwilab.com
+vega063.kr.iwilab.com
+vega064.kr.iwilab.com
+vega065.kr.iwilab.com
+vega066.kr.iwilab.com
+vega067.kr.iwilab.com
+vega068.kr.iwilab.com
+vega069.kr.iwilab.com
+vega070.kr.iwilab.com
+vega071.kr.iwilab.com
+vega072.kr.iwilab.com
+vega145.kr.iwilab.com
+vega146.kr.iwilab.com
+vega147.kr.iwilab.com
+vega148.kr.iwilab.com
+vega149.kr.iwilab.com
+vega150.kr.iwilab.com
+vega151.kr.iwilab.com
+vega152.kr.iwilab.com
+vega153.kr.iwilab.com
+vega154.kr.iwilab.com
+vega187.kr.iwilab.com
+vega188.kr.iwilab.com
+vega189.kr.iwilab.com
+vega190.kr.iwilab.com
+vega191.kr.iwilab.com
+vega192.kr.iwilab.com
+vega193.kr.iwilab.com
+vega194.kr.iwilab.com
+vega225.kr.iwilab.com
+vega226.kr.iwilab.com
+vega227.kr.iwilab.com
+vega228.kr.iwilab.com
+vega229.kr.iwilab.com
+vega240.kr.iwilab.com
+vega241.kr.iwilab.com
+vega242.kr.iwilab.com
+vega243.kr.iwilab.com
+vega255.kr.iwilab.com
+vega256.kr.iwilab.com
+vega257.kr.iwilab.com
+vega258.kr.iwilab.com
+vega259.kr.iwilab.com
+vega296.kr.iwilab.com
+vega297.kr.iwilab.com
+vega298.kr.iwilab.com
+vega299.kr.iwilab.com
+vega300.kr.iwilab.com
+)
+],
+:fr_talk => [
+%w(
+ken038.kr.iwilab.com
+ken054.kr.iwilab.com
+ken055.kr.iwilab.com
+ken183.kr.iwilab.com
+ken189.kr.iwilab.com
+ken190.kr.iwilab.com
+ken191.kr.iwilab.com
+ken192.kr.iwilab.com
+ken204.kr.iwilab.com
+ken219.kr.iwilab.com
+ken220.kr.iwilab.com
+sun061.kr.iwilab.com
+sun062.kr.iwilab.com
+sun089.kr.iwilab.com
+sun090.kr.iwilab.com
+sun091.kr.iwilab.com
+sun103.kr.iwilab.com
+),
+%w(
+ken085.kr.iwilab.com
+ken086.kr.iwilab.com
+ken087.kr.iwilab.com
+ken088.kr.iwilab.com
+ken089.kr.iwilab.com
+ken095.kr.iwilab.com
+ken096.kr.iwilab.com
+ken097.kr.iwilab.com
+ken098.kr.iwilab.com
+ken099.kr.iwilab.com
+ken105.kr.iwilab.com
+sun120.kr.iwilab.com
+sun121.kr.iwilab.com
+sun126.kr.iwilab.com
+sun127.kr.iwilab.com
+sun128.kr.iwilab.com
+sun129.kr.iwilab.com
+sun130.kr.iwilab.com
+),
+%w(
+vega040.kr.iwilab.com
+vega041.kr.iwilab.com
+vega042.kr.iwilab.com
+vega043.kr.iwilab.com
+vega044.kr.iwilab.com
+vega045.kr.iwilab.com
+vega046.kr.iwilab.com
+vega047.kr.iwilab.com
+vega048.kr.iwilab.com
+vega049.kr.iwilab.com
+vega050.kr.iwilab.com
+vega051.kr.iwilab.com
+vega052.kr.iwilab.com
+vega053.kr.iwilab.com
+vega054.kr.iwilab.com
+vega055.kr.iwilab.com
+vega056.kr.iwilab.com
+vega057.kr.iwilab.com
+)
+],
+:mi_talk => [
+%w(
+sun094.kr.iwilab.com
+sun095.kr.iwilab.com
+sun096.kr.iwilab.com
+sun097.kr.iwilab.com
+sun098.kr.iwilab.com
+sun099.kr.iwilab.com
+sun100.kr.iwilab.com
+sun105.kr.iwilab.com
+vega163.kr.iwilab.com
+vega164.kr.iwilab.com
+),
+%w(
+sun109.kr.iwilab.com
+sun110.kr.iwilab.com
+sun111.kr.iwilab.com
+sun112.kr.iwilab.com
+sun113.kr.iwilab.com
+sun114.kr.iwilab.com
+sun115.kr.iwilab.com
+sun116.kr.iwilab.com
+sun117.kr.iwilab.com
+sun118.kr.iwilab.com
+),
+%w(
+vega025.kr.iwilab.com
+vega026.kr.iwilab.com
+vega027.kr.iwilab.com
+vega028.kr.iwilab.com
+vega029.kr.iwilab.com
+vega030.kr.iwilab.com
+vega031.kr.iwilab.com
+vega032.kr.iwilab.com
+vega033.kr.iwilab.com
+vega034.kr.iwilab.com
+)
+]
+}
+
+host_names.each do |domain, values|
+	values.each_with_index do |v, i|
+		host_ids = Host.find_all_by_name(v).map(&:id)
+		project = Project.find(project_id)
+		stage_name = "#{domain} #{i+1}"
+		stage = project.stages.build(:name => stage_name)
+		stage.save
+		['web', 'app'].each do |role_name|
+  			host_ids.each do |host_id|
+    				role = stage.roles.build(:name => role_name, :host_id => host_id)
+    				role.save!
+  			end
+		end
+	end
+end
+
+end
+end
+

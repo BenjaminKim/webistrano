@@ -1,65 +1,55 @@
-<div class="special_box">
-  <div class="special_box_top"></div>
-  <div class="special_box_middle user_box"></div>
-  <div class="special_box_bottom"></div>
-</div>
-
-
-<div class="box">
-  <div class="box_top"></div>
-  <div class="box_middle">
-		<% if @user.admin? %>
-		  <p>
-		    <b>Admin User</b>
-		  </p>
-		<% end %>
-		<p>
-			  <b>Login:</b>
-			  <%=h @user.login %>
-			</p>
-
-			<p>
-			  <b>Email:</b>
-			  <%=h @user.email %>
-			</p>
-      
-			<p>
-			  <b>Timezone:</b> <%=h @user.time_zone.to_s %>
-			</p>
-			<p>
-			  <b>#Deployments:</b> <%=h @user.deployments.count %>
-			</p>
-			<br/>
-			<% if current_user.admin? || current_user == @user %>
-			  <%= link_to 'Edit & change password', edit_user_path(@user), :class => 'arrow_link' %> |
-			  <% if @user.disabled? %>
-			    <%= link_to 'Enable', enable_user_path(@user) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :post, :class => 'arrow_link'  %>
-			  <% else %>
-			    <%= link_to 'Disable', user_path(@user) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure? Disabled users can no longer login.' }, :method => :delete, :class => 'arrow_link'  %>
-			  <% end %>
-			<% end %>
-  </div>
-  <div class="box_bottom"></div>
-</div>
+<table class="table">
+    <tr>
+        <td style="width: 10%;border: none"><b><%= I18n.t 'helpers.login' %></b></td>
+        <td style="border: none"><%=h @user.login %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b><%= I18n.t 'helpers.email' %></b></td>
+        <td><%=h @user.email %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b>Timezone</b></td>
+        <td><%=h @user.time_zone.to_s %></td>
+    </tr>
+    <tr>
+        <td style="width: 10%"><b><%= "##{I18n.t 'helpers.deployments'}" %></b></td>
+        <td><%=h @user.deployments.count %></td>
+    </tr>
+</table>
 
 <div class="clear"></div>
 <br>
 
 <fieldset class="fieldset">
-  <legend>Recent deployment history</legend>
-  <%= render(:partial => 'deployments', :locals => {:user => @user, :deployments => @deployments})%>
+    <legend>Recent deployment history</legend>
+    <%= render(:partial => 'deployments', :locals => {:user => @user, :deployments => @deployments})%>
 </fieldset>
 
-
 <% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Manage users", users_path, :style => "float:right", :class => "arrow_link" %>
-    <%= link_to "Users", users_path %> &gt;
-    User <%= link_to @user.login, user_path(@user) %>
-  <% end %>
+    <% breadcrumb_box do %>
+        <%= link_to 'Manage users', users_path, :style => 'float:right' %>
+        <%= link_to 'Users', users_path %> &gt;
+        User <%= link_to @user.login, user_path(@user) %>
+    <% end %>
 <% end %>
 
 <% content_for(:page_title) do %>
-  <% @page_title = "User #{h(@user.login)}" %>
-  <h2>User <%= user_info(@user)%></h2>
+    <div class="row">
+        <div class="col-md-6"><span class="label label-primary"><%=h "#{@user.login}" %></span></div>
+        <div class="col-md-6" align="right">
+            <% if current_user.admin? || current_user == @user %>
+                <%= edit_button_for_ajax edit_user_path(@user) %>
+                <% if @user.disabled? %>
+                    <button class="btn btn-xs btn-info" rel="ajaxModalConfirm" data-url="<%= enable_user_path(@user) %>" data-method="post" data-title="<%= t('helpers.enable') %>" data-message="Are you sure?">
+                        <i class="glyphicon glyphicon-ok"></i><%= t('helpers.enable') %>
+                    </button>
+                <% else %>
+                    <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" data-url="<%= user_path(@user) %>" data-method="delete" data-title="<%= t('helpers.disable') %>" data-message="Are you sure? Disabled users can no longer login.">
+                        <i class="glyphicon glyphicon-remove"></i><%= t 'helpers.disable' %>
+                    </button>
+                <% end %>
+            <% end %>
+        </div>
+    </div>
 <% end %>
+

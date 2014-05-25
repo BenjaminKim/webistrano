@@ -1,12 +1,8 @@
-<head>
-    <%= javascript_include_tag 'prettify' %>
-    <%= javascript_include_tag 'lang-rb' %>
-    <%= stylesheet_link_tag 'desert' %>
-</head>
-<body style="background-color: #333" onload="prettyPrint()">
-<div style="display: inline-block">
-<pre class="prettyprint lang-rb linenums">
-load 'deploy'
+<%= javascript_include_tag 'ace-editor-custom' %>
+
+
+<body>
+<div id="editor" style="width: 100%; height: 100%;" class="ace_editor">load 'deploy'
 
 # ================================================================
 # ROLES
@@ -50,6 +46,17 @@ load 'deploy'
 <% @stage.recipes.each do |recipe| %>
   <%=raw recipe.body %>
 <% end %>
-</pre>
 </div>
 </body>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/clouds");
+    // set ruby conventions
+    editor.getSession().setMode("ace/mode/ruby");
+    editor.getSession().setUseSoftTabs(true);
+    editor.getSession().setTabSize(2);
+
+    editor.getSession().setUseWrapMode(true);
+    editor.setReadOnly(true);
+</script>
+

@@ -2,16 +2,16 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"><%= I18n.t 'helpers.titles.clone', model: (I18n.t 'helpers.titles.stage') %></h4>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.clone', model: (I18n.t 'helpers.stage') %></h4>
         </div>
 
-        <%= form_for(:project, :url => clone_path(@original)) do |f| %>
+        <%= form_for(:project, url: clone_path(@original)) do |f| %>
             <div class="modal-body">
-                <%= render(:partial => 'form')%>
+                <%= render(partial: 'form')%>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close'%></button>
-                <%= submit_tag (I18n.t 'helpers.form.clone'), class: 'btn btn-primary' %>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.close'%></button>
+                <%= submit_tag (I18n.t 'helpers.clone'), class: 'btn btn-primary' %>
             </div>
         <% end %>
     </div>

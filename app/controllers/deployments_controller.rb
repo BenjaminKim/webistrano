@@ -1,7 +1,7 @@
 class DeploymentsController < ApplicationController
   
   before_filter :load_stage
-  before_filter :ensure_deployment_possible, :only => [:new, :create]
+  before_filter :ensure_deployment_possible, only: [:new, :create]
 
   # GET /projects/1/stages/1/deployments
   # GET /projects/1/stages/1/deployments.xml
@@ -9,8 +9,8 @@ class DeploymentsController < ApplicationController
     @deployments = @stage.deployments
 
     respond_to do |format|
-      format.html # index.rhtml
-      format.xml  { render :xml => @deployments.to_xml }
+      format.html
+      format.xml  { render xml: @deployments.to_xml }
     end
   end
 
@@ -21,9 +21,8 @@ class DeploymentsController < ApplicationController
     set_auto_scroll
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html
       format.xml  { render :xml => @deployment.to_xml }
-      format.js { render :partial => 'status.html.erb' }
     end
   end
 
@@ -31,9 +30,6 @@ class DeploymentsController < ApplicationController
   def new
     @deployment = @stage.deployments.new
     @deployment.task = params[:task]
-
-    # Allow description to be passed in via a URL parameter
-    @deployment.description = params[:description]
     
     if params[:repeat]
       @original = @stage.deployments.find(params[:repeat])
@@ -45,18 +41,29 @@ class DeploymentsController < ApplicationController
   # POST /projects/1/stages/1/deployments.xml
   def create
     @deployment = Deployment.new
-    
+
     respond_to do |format|
       if populate_deployment_and_fire
-        
-        @deployment.deploy_in_background!
+        use_krb = !session[:kerberos].nil?
+        if use_krb
+          begin
+            data = SessionsHelper::decrypt(Base64.decode64(session[:kerberos]))
+            data = ActiveSupport::JSON.decode(data)
+            username = data['username']
+            password = data['password']
+          rescue
+            use_krb =false
+          end
+        end
+
+        @deployment.deploy_in_background!({kerberos: use_krb, username: username, password: password})
 
         format.html { redirect_to project_stage_deployment_url(@project, @stage, @deployment)}
-        format.xml  { head :created, :location => project_stage_deployment_url(@project, @stage, @deployment) }
+        format.xml  { head :created, location: project_stage_deployment_url(@project, @stage, @deployment) }
       else
         @deployment.clear_lock_error
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @deployment.errors.to_xml }
+        format.html { render action: :new }
+        format.xml  { render xml: @deployment.errors.to_xml }
       end
     end
   end
@@ -66,7 +73,7 @@ class DeploymentsController < ApplicationController
     @deployment = @stage.deployments.order('created_at desc').first
 
     respond_to do |format|
-      format.html { render :action => "show"}
+      format.html { render action: :show }
       format.xml do
         if @deployment
           render :xml => @deployment.to_xml
@@ -93,8 +100,8 @@ class DeploymentsController < ApplicationController
         flash[:error] = "Cancelling failed: #{e.message}"
         format.html { redirect_to project_stage_deployment_url(@project, @stage, @deployment)}
         format.xml  do
-          @deployment.errors.add("base", e.message)
-          render :xml => @deployment.errors.to_xml 
+          @deployment.errors[:base] = e.message
+          render :xml => @deployment.errors.to_xml
         end
       end
     end
@@ -106,7 +113,7 @@ class DeploymentsController < ApplicationController
     set_auto_scroll
 
     respond_to do |format|
-      format.html { render :partial => 'status.html.erb' }
+      format.html { render partial: 'status' }
     end
   end
   
@@ -125,7 +132,7 @@ class DeploymentsController < ApplicationController
   end
 
   def set_auto_scroll
-    if params[:auto_scroll].to_s == "true"
+    if params[:auto_scroll].to_s == 'true'
       @auto_scroll = true
     else
       @auto_scroll = false

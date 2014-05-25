@@ -1,0 +1,14 @@
+<%= javascript_include_tag 'ace/ace' %>
+
+<div id="editor" style="height: 400px;" class="ace_editor"><%= @recipe.body %></div>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/clouds");
+    // set ruby conventions
+    editor.getSession().setMode("ace/mode/ruby");
+    editor.getSession().setUseSoftTabs(true);
+    editor.getSession().setTabSize(2);
+
+    editor.getSession().setUseWrapMode(true);
+    editor.setReadOnly(<%= readonly rescue false %>);
+</script>

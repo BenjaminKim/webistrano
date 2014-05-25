@@ -1,112 +1,130 @@
 <div class="special_box">
-  <div class="special_box_top"></div>
-  <div class="special_box_middle" style="min-height: 175px; height: 163px;">
-  	<div style="padding: 7px 50px 0px 50px; *padding: 0px 50px;"><%= image_tag('peritor_theme/status_' + @deployment.status + '.gif', :title => @deployment.status) %></div>
-      <div class="deployment_status">
-        <b>Status:</b> <%=h @deployment.status %>
-        <% if @deployment.cancelling_possible? %>
-          &nbsp; &nbsp;
-              <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
-        <% end %>
-    	  <% if @deployment.completed? %>
-          &nbsp; &nbsp;
-      	  <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
-        <% end %>
-      </div>
-  </div>
-  <div class="special_box_bottom"></div>
+    <div class="special_box_top"></div>
+    <div class="special_box_middle" style="min-height: 175px; height: 163px;">
+        <div style="padding: 7px 50px 0px 50px; *padding: 0px 50px;"><%= image_tag('peritor_theme/status_' + @deployment.status + '.gif', :title => @deployment.status) %></div>
+        <div class="deployment_status">
+            <b>Status:</b> <%=h @deployment.status %>
+            <% if @deployment.cancelling_possible? %>
+                &nbsp; &nbsp;
+                <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment), data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
+            <% end %>
+            <% if @deployment.completed? %>
+                &nbsp; &nbsp;
+                <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
+            <% end %>
+        </div>
+    </div>
+    <div class="special_box_bottom"></div>
 </div>
 
-<div class="box">
-  <div class="box_top"></div>
-  <div class="box_middle" style="height: 156px;">
-	<p>
-    <b>Task:</b>
-	  <%=raw @deployment.task %>
-	</p>
-	<p>
-	  <b>Stage:</b>
-	  <%= link_to @deployment.stage.name, project_stage_path(@project, @stage) %> 
-	</p>
-	<p>
-	  <b>Deployed by:</b> 
-	  <%= user_info(@deployment.user) rescue '' %>
-	</p>
-	<p>
-	  <b>Revision:</b> 
-	  <%= @deployment.revision %>
-	</p>
-	<p>
-	  <b>Started:</b>
-	  <%=h @deployment.created_at.to_s(:log) %> (<%=h current_user.time_zone rescue 'UTC' %>)
-	</p>
-  <p>
-	  <b>Completed:</b>
-	  <%=h "#{@deployment.completed_at.to_s(:log)} (#{current_user.time_zone})" rescue nil %>
-	</p>
-  </div>
-  <div class="box_bottom"></div>
-</div>
-
-<div class="clear"></div>
-
-<br />
-
-<fieldset class="fieldset">
-  <legend>Comment</legend>
-  <%=raw web_friendly_text @deployment.description %>
-</fieldset>
-<br /> <br />
-
-<fieldset class="fieldset">
-  <legend>Log</legend>
-  <div style="float:right; padding: 0px 5px 10px 0px; *padding: 0px"><input type="checkbox" class="noframe" id="auto_scroll_log" <%=h @auto_scroll ? 'checked="checked"' : ''%> > <label for="auto_scroll_log" class="redtext"><b>auto scroll</b></label></div>
-	<div class="log_output" style="background-repeat:repeat-y; width:100%">
-		<pre><%=h @deployment.log.gsub('\n', "\n") rescue '' %></pre>
-  </div>
-</fieldset>
-
-<br />
-
-<table width="100%">
-  <tr>
-    <td width="">
-      <%= link_to_function 'Scroll to top', "scroll_to_top()", :class => 'arrow_link' %> | <%= link_to 'Back to stage', project_stage_path(@project, @stage), :class => 'arrow_link', :id => 'back_link_at_the_bottom' %>
-    </td>
-    <td align="right" width="120px">
-      <%= image_tag('peritor_theme/status_' + @deployment.status + '_small.gif', :title => @deployment.status, :width => 20, :heigth => 15, :style => 'vertical-align:middle;') %>
-      <b>Status:</b> <%=h @deployment.status %>
-    </td>
-    <td align="right" width="70px">
-      <% if @deployment.completed? %>
-      &nbsp; &nbsp;
-      <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
-      <% end %>
-      <% if @deployment.cancelling_possible? %>
-        &nbsp; &nbsp;
-          <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment) + "?authenticity_token=#{form_authenticity_token}", data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
-      <% end %>
-    </td>
-  </tr>
+<!--TODO-->
+<!--special_box의 크기를 계산해서 width를 정해야함.-->
+<table class="table" style="width: 70%">
+    <tr>
+        <td><b>Task</b></td>
+        <td><%= @deployment.task %></td>
+    </tr>
+    <tr>
+        <td><b>Stage</b></td>
+        <td><%= link_to @deployment.stage.name, project_stage_path(@project, @stage) %></td>
+    </tr>
+    <tr>
+        <td><b>Deployed by</b></td>
+        <td><%= user_info(@deployment.user) rescue '' %></td>
+    </tr>
+    <tr>
+        <td><b>Revision</b></td>
+        <td><%= @deployment.revision %></td>
+    </tr>
+    <tr>
+        <td><b>Started</b></td>
+        <td><%=h @deployment.created_at.to_s(:log) %> (<%=h current_user.time_zone rescue 'UTC' %>)</td>
+    </tr>
+    <tr>
+        <td><b>Completed</b></td>
+        <td><%=h "#{@deployment.completed_at.to_s(:log)} (#{current_user.time_zone})" rescue nil %></td>
+    </tr>
 </table>
 
-<% unless @deployment.completed? %>
-    <script type="text/javascript">
-        function update_status(){
-            $.get({
-                url: '<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>',
-                data: {
-                    random_differentiator: Math.floor(Math.random()*50000), // work around IE caching bug
-                    auto_scroll: $('auto_scroll_log').checked
-                },
-                success: function(data) {
-                    // TODO: evaludate script in data
-                    $('#status_info').html(data);
-                }
-            });
+<div class="clear"></div>
+<br>
+
+<fieldset class="fieldset">
+    <legend>Comment</legend>
+    <%=raw web_friendly_text @deployment.description %>
+</fieldset>
+<br> <br>
+
+<fieldset class="fieldset">
+    <legend>
+        <div class="row">
+            <div class="col-md-6">Log</div>
+            <div class="col-md-6" align="right" style="font-size: 13pt;"><input type="checkbox" class="noframe" id="auto_scroll_log" <%= @auto_scroll ? 'checked=checked' : ''%>> auto scroll</div>
+        </div>
+    </legend>
+    <div style="background-repeat:repeat-y; width:100%;">
+        <pre style="font-size: 8pt;"><%=h @deployment.log rescue '' %></pre>
+    </div>
+</fieldset>
+
+<br>
+
+<div class="row">
+    <div class="col-md-6">
+        <%= link_to 'Scroll to top', '#', onclick: 'scroll_to_top()', id: 'scroll_to_top_link_at_bottom' %>
+    </div>
+    <div class="col-md-6" align="right">
+        <%= image_tag('peritor_theme/status_' + @deployment.status + '_small.gif', title: @deployment.status, width: 20, height: 15, style: 'vertical-align:middle;') %>
+        <b>Status:</b> <%=h @deployment.status %>
+
+        <% if @deployment.completed? %>
+            &nbsp; &nbsp;
+            <%= link_to 'Repeat', new_project_stage_deployment_path(current_project, current_stage) + '?repeat=' + h(@deployment.id), :class => 'arrow_link'  %>
+        <% end %>
+        <% if @deployment.cancelling_possible? %>
+            &nbsp; &nbsp;
+            <%= button_to 'Cancel', cancel_project_stage_deployment_path(current_project, current_stage, @deployment), data: {confirm: 'Are you sure? Killing this deployment will not cleanup and rollback.'}, method: :post, class: 'arrow_link' %>
+        <% end %>
+    </div>
+</div>
+    <tr>
+        </td>
+        <td align="right" width="120px">
+        </td>
+        <td align="right" width="70px">
+        </td>
+    </tr>
+</table>
+
+<script>
+    function check_auto_scroll_log(){
+        var scroller = $("#auto_scroll_log");
+
+        if(scroller && scroller.is(":checked")){
+            $("html, body").animate({ scrollTop: $(document).height() }, "fast");
+        }
+    }
+
+    function scroll_to_top() {
+        if($('#auto_scroll_log').is(":checked")){
+            $('#auto_scroll_log').attr("checked", false);
         }
 
-        setTimeout(update_status, 3000);
-        check_auto_scroll_log();
-    </script>
-<% end %>
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    }
+    function update_status(){
+        $.get(
+            '<%=h status_project_stage_deployment_path(@project, @stage, @deployment) %>',
+            {
+                random_differentiator: Math.floor(Math.random() * 50000), // work around IE caching bug
+                auto_scroll: $('#auto_scroll_log').is(":checked")
+            }
+        ).success(function(data) {
+                $('#status_info').html(data);
+            }
+        );
+    }
+
+    setTimeout(update_status, 3000);
+    check_auto_scroll_log();
+</script>

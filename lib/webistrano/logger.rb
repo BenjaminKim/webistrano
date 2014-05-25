@@ -9,20 +9,20 @@ module Webistrano
     INFO      = 1
     DEBUG     = 2
     TRACE     = 3
-    
+
     MAX_LEVEL = 3
-    
+
     def initialize(deployment)
       raise ArgumentError, 'deployment is already completed and thus can not be logged to' if deployment.completed?
       @deployment = deployment
     end
-    
+
     def log(level, message, line_prefix=nil)
       if level <= self.level
         indent = "%*s" % [MAX_LEVEL, "*" * (MAX_LEVEL - level)]
-        
+
         message = hide_passwords(message)
-        
+
         (message.respond_to?(:lines) ? message.lines : message).each do |line|
           if line_prefix
             write_msg "#{indent} [#{line_prefix}] #{line.strip}\n"
@@ -53,14 +53,8 @@ module Webistrano
       # not needed here
     end
     
-    # actual writing of a msg to the DB
     def write_msg(msg)
-      @deployment.reload
-      @deployment.transaction do
-        @deployment.log = (@deployment.log || '') + msg
-        @deployment.log = @deployment.log[-65535..-1] if @deployment.log.size > 65535
-        @deployment.save!
-      end
+      @deployment.file_logger << msg
     end
     
     # replaces deployment passwords in the message by 'XXXXX'

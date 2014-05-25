@@ -1,7 +1,7 @@
 <% if deployments.empty? %>
-  <br/>
+  <br>
     This user has never deployed any stages. 
-  <br/>
+  <br>
 <% else %>
 
   <% deployments.each do |deployment| %>
@@ -10,7 +10,7 @@
 <% end %>
 <% if deployments.size != user.deployments.count %>
 <div class="fieldset_bottom">
-  <br />
+  <br>
   <%= link_to "Complete deployment history", deployments_user_path(user), :class => 'arrow_link' %>
 </div>
 <% end %>

@@ -1,3 +1,5 @@
+require 'popen4'
+
 class Deployment < ActiveRecord::Base
   belongs_to :stage
   belongs_to :user
@@ -19,10 +21,10 @@ class Deployment < ActiveRecord::Base
   
   DEPLOY_TASKS    = ['deploy', 'deploy:default', 'deploy:migrations']
   SETUP_TASKS     = ['deploy:setup']
-  STATUS_CANCELED = "canceled"
-  STATUS_FAILED   = "failed"
-  STATUS_SUCCESS  = "success"
-  STATUS_RUNNING  = "running"
+  STATUS_CANCELED = 'canceled'
+  STATUS_FAILED   = 'failed'
+  STATUS_SUCCESS  = 'success'
+  STATUS_RUNNING  = 'running'
   STATUS_VALUES   = [STATUS_SUCCESS, STATUS_FAILED, STATUS_CANCELED, STATUS_RUNNING]
   
   validates_inclusion_of :status, :in => STATUS_VALUES
@@ -31,24 +33,24 @@ class Deployment < ActiveRecord::Base
   # his has to done only on creation as later DB logging MUST always work
   def validate_on_create
     unless self.stage.blank?
-      errors.add('stage', 'is not ready to deploy') unless self.stage.deployment_possible?
+      errors[:stage] = 'is not ready to deploy' unless self.stage.deployment_possible?
       
       self.stage.prompt_configurations.each do |conf|
-        errors.add('base', "Please fill out the parameter '#{conf.name}'") unless !prompt_config.blank? && !prompt_config[conf.name.to_sym].blank?
+        errors[:base] = "Please fill out the parameter '#{conf.name}'" unless !prompt_config.blank? && !prompt_config[conf.name.to_sym].blank?
       end
       
-      errors.add('lock', 'The stage is locked') if self.stage.locked? && !self.override_locking
+      errors[:lock] = 'The stage is locked' if self.stage.locked? && !self.override_locking
       
       ensure_not_all_hosts_excluded
     end
   end
   
-  def self.lock_and_fire(&block)
+  def self.lock_and_fire
     transaction do
       d = Deployment.new
-      block.call(d)
+      yield d
       return false unless d.valid?
-      stage = Stage.find(d.stage_id, :lock => true)
+      stage = Stage.lock.find(d.stage_id)
       stage.lock
       d.save!
       stage.lock_with(d)
@@ -104,7 +106,7 @@ class Deployment < ActiveRecord::Base
   end
   
   def status_in_html
-    "<span class='deployment_status_#{self.status.gsub(/ /, '_')}'>#{self.status}</span>"
+    "<span class=\"deployment_status_#{self.status.gsub(/ /, '_')}\">#{self.status}</span>"
   end
 
   def complete_with_error!
@@ -124,13 +126,43 @@ class Deployment < ActiveRecord::Base
   
   # deploy through Webistrano::Deployer in background (== other process)
   # TODO - at the moment `Unix &` hack
-  def deploy_in_background! 
-    unless RAILS_ENV == 'test'   
-      RAILS_DEFAULT_LOGGER.info "Calling other ruby process in the background in order to deploy deployment #{self.id} (stage #{self.stage.id}/#{self.stage.name})"
-      system("sh -c \"cd #{RAILS_ROOT} && ruby script/runner -e #{RAILS_ENV} ' deployment = Deployment.find(#{self.id}); deployment.prompt_config = #{self.prompt_config.inspect.gsub('"', '\"')} ; Webistrano::Deployer.new(deployment).invoke_task! ' >> #{RAILS_ROOT}/log/#{RAILS_ENV}.log 2>&1\" &")
+  def deploy_in_background! (opts={})
+    unless Rails.env == 'test'
+      krb_env=''
+      if opts[:kerberos]
+        username = opts[:username]
+        password = opts[:password]
+
+        ccfile = File.join(Dir.tmpdir, "KAKAOAUTH.#{self.id}")
+
+        inputmethod = ""
+        if (/darwin/ =~ RUBY_PLATFORM) != nil
+          inputmethod = "--password-file=STDIN"
+        end
+
+        kinit_cmd = "kinit -c #{ccfile} #{inputmethod} #{username}"
+        status = POpen4::popen4(kinit_cmd) do |stdout, stderr, stdin, pid|
+          stdin.puts password
+        end
+        if status.exitstatus == 0
+          krb_env = "KRB5CCNAME=#{ccfile} "
+        else
+          puts "KRBFAILURE:#{status.exitstatus} #{kinit_cmd}"
+          logger.error "KERBEROS FAIL: #{status.exitstatus} #{kinit_cmd} #{self.id} (stage #{self.stage.id}/#{self.stage.name})"
+        end
+      end
+
+      logger.info "Calling other ruby process in the background in order to deploy deployment #{self.id} (stage #{self.stage.id}/#{self.stage.name})"
+      system("sh -c \"cd #{Rails.root} && #{krb_env} bundle exec rails runner -e #{Rails.env} ' deployment = Deployment.find(#{self.id}); deployment.prompt_config = #{self.prompt_config.inspect.gsub('"', '\"')} ; Webistrano::Deployer.new(deployment).invoke_task! ' >> #{Rails.root}/log/#{Rails.env}.log 2>&1\" &")
+      # Webistrano::Deployer.new(Deployment.find(self.id)).invoke_task!
     end
   end
-  
+
+  #require 'net/ssh/authentication/methods/gssapi_with_mic'
+  #Net::SSH.start('tiger246.kr2.iwilab.com', 'deploy', {:auth_methods => ["gssapi-with-mic"], verbose: Logger::DEBUG}) do |ssh|
+  #  puts ssh.exec!('hostname')
+  #end
+
   # returns an unsaved, new deployment with the same task/stage/description
   def repeat
     deployment = Deployment.new
@@ -153,7 +185,7 @@ class Deployment < ActiveRecord::Base
   # will deploy to. This computed out of the list
   # of given roles and the excluded hosts
   def deploy_to_roles(base_roles=self.roles)
-    base_roles.dup.delete_if{|role| self.excluded_hosts.include?(role.host) }
+    base_roles.dup.select { |role| not self.excluded_hosts.include?(role.host) }
   end
   
   # a list of all excluded hosts for this deployment
@@ -180,24 +212,53 @@ class Deployment < ActiveRecord::Base
   end
   
   def cancel!
-    raise "Canceling not possible: Either no PID or already completed" unless cancelling_possible?
+    raise 'Canceling not possible: Either no PID or already completed' unless cancelling_possible?
     
-    Process.kill("SIGINT", self.pid)
+    Process.kill('SIGINT', self.pid)
     sleep 2
-    Process.kill("SIGKILL", self.pid) rescue nil # handle the case that we killed the process the first time
+    Process.kill('SIGKILL', self.pid) rescue nil # handle the case that we killed the process the first time
+
+    ccfile = File.join(Dir.tmpdir, "KAKAOAUTH.#{self.id}")
+    FileUtils.remove_file(ccfile) rescue nil
     
     complete_canceled!
   end
-  
+
   def clear_lock_error
-    self.errors.instance_variable_get("@errors").delete('lock')
+    self.errors.delete(:lock)
+  end
+
+  def file_logger
+    if @logger
+      @logger
+    else
+      @logger = File.new(log_file_name, 'a')
+      @logger.sync = true
+      @logger
+    end
+  end
+
+  def log(length=65536)
+    if File.exist? log_file_name
+      if length > 0
+        `tail -c #{length} #{log_file_name}`
+      else
+        `cat #{log_file_name}`
+      end
+    else
+      read_attribute(:log)
+    end
   end
   
   protected
+  def log_file_name
+    "#{Rails.root}/log/deploy/#{self.id}.log"
+  end
+
   def ensure_not_all_hosts_excluded
     unless self.stage.blank? || self.excluded_host_ids.blank?
       if deploy_to_roles(self.stage.roles).blank?
-        errors.add('base', "You cannot exclude all hosts.")
+        errors[:base] = 'You cannot exclude all hosts.'
       end
     end
   end
@@ -205,10 +266,11 @@ class Deployment < ActiveRecord::Base
   def save_completed_status!(status)
     raise 'cannot complete a second time' if self.completed?
     transaction do
-      stage = Stage.find(self.stage_id, :lock => true)
+      stage = Stage.lock.find(self.stage_id)
       stage.unlock
       self.status = status
       self.completed_at = Time.now
+      self.log = log
       self.save!
     end
   end

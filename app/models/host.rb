@@ -15,7 +15,7 @@ class Host < ActiveRecord::Base
   end
   
   def validate
-    errors.add("name", "is not a valid hostname or IP") unless ( valid_ip? || valid_hostname? )
+    errors[:name] = 'is not a valid hostname or IP' unless ( valid_ip? || valid_hostname? )
   end
   
   def valid_hostname?

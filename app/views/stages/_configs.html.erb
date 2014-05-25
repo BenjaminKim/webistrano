@@ -1,24 +1,36 @@
 <% if @stage.configuration_parameters.empty? %>
-  <br/>
-    No stage specific configuration added yet. Stage specific configuration entries override project configuration entries. 
+    <div align="right">
+        <%= new_button_for_ajax new_project_stage_stage_configuration_path(@project, @stage) %>
+    </div>
+    <br>
+    No stage specific configuration added yet. Stage specific configuration entries override project configuration entries.
     Typical examples are a different repository path (e.g. trunk) or a different Rails environment.
     Please add configuration entries.
-  <br/>
+    <br>
 <% else %>
-  <table class="sortable">
-    <tr>
-      <th width="1%">Name</th>
-      <th width="98%">Value</th>
-      <th width="1%">Prompt?</th>
-    </tr>
-  <% for config in @stage.configuration_parameters %>
-    <tr class="<%= cycle :even, :odd, :name => 'configs' %>">
-      <td title="<%=h config.name %>"><%= truncate(h(config.name), :length => 25) %></td>
-      <td title="<%=h config.value %>"><%=h truncate(hide_password_in_value(config), :length => 45) %></td>
-      <td><%= config.prompt_status_in_html %></td>
-      <td><%= link_to 'Edit', edit_project_stage_stage_configuration_path(@project, @stage, config) %></td>
-      <td><%= link_to 'Delete', project_stage_stage_configuration_path(@project, @stage, config) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :delete %></td>
-    </tr>
-  <% end %>
-  </table>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th><%= I18n.t 'helpers.name' %></th>
+            <th><%= I18n.t 'helpers.value' %></th>
+            <th><%= I18n.t 'helpers.note' %></th>
+            <th style="text-align: right"><%= new_button_for_ajax new_project_stage_stage_configuration_path(@project, @stage) %></th>
+        </tr>
+        </thead>
+        <tbody class="table-bordered">
+        <% @stage.configuration_parameters.each do |config| %>
+            <tr>
+                <% filtered_config = hide_password_in_value(config) %>
+                <td title="<%= config.name %>"><%= config.name.truncate(25) %></td>
+                <td title="<%= filtered_config %>"><%= filtered_config.truncate(45) %></td>
+                <td><%= I18n.t('helpers.prompt') if config.prompt? %></td>
+                <td align="right">
+                    <%= edit_button_for_ajax edit_project_stage_stage_configuration_path(@project, @stage, config) %>
+                    <%= delete_button_for_ajax project_stage_stage_configuration_path(@project, @stage, config), config.name %>
+                </td>
+            </tr>
+        <% end %>
+        </tbody>
+    </table>
 <% end %>
+

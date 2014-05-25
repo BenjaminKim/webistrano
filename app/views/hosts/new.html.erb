@@ -6,12 +6,12 @@
         </div>
         <%= form_for(:host, :url => hosts_path) do |f| %>
             <div class="modal-body">
-                <b>Name (DNS name or IP address)</b><br />
+                <b>Name (DNS name or IP address)</b><br>
                 <%= f.text_field :name, :style => 'width: 330px' %>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <%= submit_tag I18n.t('helpers.form.create'), class: 'btn btn-primary' %>
+                <%= submit_tag I18n.t('helpers.create'), class: 'btn btn-primary' %>
             </div>
         <% end %>
     </div>

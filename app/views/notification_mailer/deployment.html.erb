@@ -13,11 +13,11 @@ Completed (UTC): <%= @deployment.completed_at.utc.to_s(:log) rescue nil %>
 
 Deployed by: <%= @deployment.user.login %>
 
-Comment: 
+Comment:
 
 <%= @deployment.description %>
 
 
 Log:
 
-<%= @deployment.log.gsub('\n', "\n") rescue '' %>
+<%= @deployment.log rescue '' %>

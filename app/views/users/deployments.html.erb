@@ -3,7 +3,7 @@
   <%= render(:partial => 'deployments', :locals => {:deployments => @deployments, :user => @user})%>
 </fieldset>
 
-<br />
+<br>
 <%= link_to 'Back to user', user_path(@user), :class => 'arrow_link' %>
 
 <% content_for(:breadcrumb) do %>

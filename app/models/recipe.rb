@@ -33,7 +33,7 @@ class Recipe < ActiveRecord::Base
    
    unless result == "Syntax OK"
      line = $1.to_i if result =~ /^-:(\d+):/
-     errors.add(:body, "syntax error at line: #{line}") unless line.nil?
+     errors[:body] = "syntax error at line: #{line}" unless line.nil?
    end
   rescue => e
     logger.error "Error while validating recipe syntax of recipe #{self.id}: #{e.inspect} - #{e.backtrace.join("\n")}"

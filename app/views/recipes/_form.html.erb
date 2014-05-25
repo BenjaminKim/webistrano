@@ -1,41 +1,15 @@
 <% flashed_errors(:recipe) %>
 <p>
-  <b>Name</b><br />
-  <%= text_field 'recipe', 'name', :style =>'width:300px; ' %>
+    <b>Name</b><br>
+    <%= text_field 'recipe', 'name', :style =>'width:300px; ' %>
 </p>
 
 <p>
-  <b>Description</b><br />
-  <%= text_area 'recipe', 'description', :style =>'width:663px; height: 100px;' %>
+    <b>Description</b><br>
+    <%= text_area 'recipe', 'description', :style =>'width:663px; height: 100px;' %>
 </p>
 
 <p>
-  <b>Body</b><br />
-  <%= text_area 'recipe', 'body', :style =>'width:663px; height: 400px;' %>
+    <b>Body</b><br>
+    <%= render 'editor', locals: {readonly: false} %>
 </p>
-
-<script>
-
-    $(document).ready(function() {
-        $('#recipe_body').observe_field(1.5, function() {
-            $.ajax({
-                type: 'post',
-                url: "<%= preview_recipes_url %>",
-                data: $('#recipe_body').serialize(),
-                success: function(data) {
-                    $('#preview_fieldset').html(data)
-                }
-            });
-        });
-    });
-</script>
-<div id="preview_fieldset">
-  <fieldset class="fieldset" style="width:560px;">
-    <legend>Code-Preview</legend>
-    <div id="preview">
-      <%= render(:partial => 'preview', :locals => {:recipe => @recipe}) %>
-    </div>
-  </fieldset>
-<br/>
-</div>
-

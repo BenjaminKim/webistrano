@@ -4,14 +4,14 @@
         <div class="panel-heading"><%=h pluralize(Project.count, 'Project')%> listed</div>
         <% if @projects.empty? %>
             <div class="panel-body">
-                <br/>
-                No projects configured yet.<br />
+                <br>
+                No projects configured yet.<br>
                 Please add a project.
-                <br/>
+                <br>
             </div>
         <% else %>
             <table class="table">
-                <tbhead>
+                <thead>
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
@@ -19,17 +19,16 @@
                         <th>#Deploy</th>
                         <th>Created At</th>
                     </tr>
-                </tbhead>
+                </thead>
                 <tbody>
-                <% for project in @projects %>
+                <% @projects.each do |project| %>
                     <tr>
-                        <td><%= project.name %></td>
+                        <td><%= link_to project.name, project_path(project) %></td>
                         <td><%= project.description.truncate 40 %></td>
                         <td><%= project.stages.count %></td>
                         <td><%= project.deployments.count %></td>
                         <td><%= project.created_at.strftime '%Y-%m-%d' %></td>
                         <td align="right">
-                            <%= view_button_for_ajax project_path(project) %>
                             <%= edit_button_for_ajax edit_project_path(project) %>
                             <%= clone_button_for_ajax clone_form_path(project) %>
                             <%= delete_button_for_ajax project_path(project), project.name %>
@@ -49,6 +48,6 @@
 <% end %>
 
 <% content_for(:page_title) do %>
-    <%= page_title_helper(I18n.t('projects.title'), new_button_for_ajax(new_project_path)) %>
+    <%= page_title_helper(I18n.t('helpers.projects'), new_button_for_ajax(new_project_path)) %>
 <% end %>
 

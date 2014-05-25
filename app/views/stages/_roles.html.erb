@@ -1,27 +1,34 @@
 <% if @stage.hosts.empty? %>
-  <p>
-    No hosts for this stage. A host is a physical host that this stage should deploy to.
-    Please add a host.
-  </p>
+    <p>
+        No hosts for this stage. A host is a physical host that this stage should deploy to.
+        Please add a host.
+    </p>
 <% else %>
-  <table class="sortable">
-    <tr>
-      <th width="25%">Host</th>
-      <th width="25%">Role</th>
-      <th width="24%">SSH Port</th>
-      <th width="25%">Attributes</th>
-      <th width="1%">Status</th>
-    </tr>
-  <% for role in @stage.roles.sort_by{|a| [ a.name, a.host.name ] } %>
-    <tr class="<%= cycle :even, :odd, :name => 'roles' %>">
-      <td><%= link_to h(role.host.name), host_path(role.host) %></td>
-      <td><%=h role.name %></td>
-      <td><%=h role.ssh_port || 'default' %></td>
-      <td><%=h role.role_attribute_hash.inspect unless role.role_attribute_hash.blank?  %></td>
-      <td><%= role.status_in_html %></td>
-      <td><%= link_to 'Edit', edit_project_stage_role_path(@project, @stage, role) %></td>
-      <td><%= link_to 'Delete', project_stage_role_path(@project, @stage, role) + "?authenticity_token=#{form_authenticity_token}", data: { confirm: 'Are you sure?' }, :method => :delete %></td>
-    </tr>
-  <% end %>
-  </table>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Host</th>
+            <th>Role</th>
+            <th>SSH Port</th>
+            <th>Attributes</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody class="table-bordered">
+        <% @stage.roles.sort_by{|a| [ a.name, a.host.name ] }.each do |role| %>
+            <tr class="<%= cycle :even, :odd, :name => 'roles' %>">
+                <td><%= link_to h(role.host.name), host_path(role.host) %></td>
+                <td><%= role.name %></td>
+                <td><%= role.ssh_port || 'default' %></td>
+                <td><%= role.role_attribute_hash.inspect unless role.role_attribute_hash.blank?  %></td>
+                <td><%= role.status %></td>
+                <td align="right">
+                    <%= edit_button_for_ajax edit_project_stage_role_path(@project, @stage, role) %>
+                    <%= delete_button_for_ajax project_stage_role_path(@project, @stage, role), role.host.name %>
+                </td>
+            </tr>
+        <% end %>
+        </tbody>
+    </table>
 <% end %>

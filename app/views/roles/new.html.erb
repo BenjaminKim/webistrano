@@ -1,24 +1,17 @@
-<%= form_tag(project_stage_roles_path(current_project, current_stage), :method => :post) do %>
-  
-  <%= render(:partial => 'form')%>
-
-  <%= link_to 'Back to role', project_stage_path(current_project, current_stage), :class => 'arrow_link ontheright', :style => 'margin-right: 330px' %>
-
-  <p>
-    <%= submit_tag "Create" %>
-  </p>
-<% end %>
-
-<% content_for(:breadcrumb) do %>
-  <% breadcrumb_box do %>
-    <%= link_to "Back to stage", project_stage_path(current_project, current_stage), :style => "float:right", :class => "arrow_link" %>
-    Project <%= link_to current_project.name, project_path(current_project) %> &gt; 
-    Stage <%= link_to current_stage.name, project_stage_path(current_project, current_stage) %> &gt; 
-    New role
-  <% end %>
-<% end %>
-
-<% content_for(:page_title) do %>
-  <% @page_title = "New host for #{h(current_stage.name)}" %>
-  <h2>New role for <%=h current_stage.name %></h2>
-<% end %>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%= I18n.t 'helpers.titles.new', model: (I18n.t 'helpers.stage') %></h4>
+        </div>
+        <%= form_tag(project_stage_roles_path(current_project, current_stage), method: :post) do %>
+            <div class="modal-body">
+                <%= render partial: 'form' %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.close' %></button>
+                <%= submit_tag (I18n.t 'helpers.create'), class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+</div>

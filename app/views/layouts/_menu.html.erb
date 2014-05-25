@@ -1,4 +1,12 @@
 <!--super simple tree-->
+<style>
+    .branch
+    {
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+</style>
 <div class="tree" id="root">
     <% @menu.each do |branch| %>
         <%= tree_brnach_draw(branch) %>

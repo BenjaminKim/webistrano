@@ -25,7 +25,7 @@ class Stage < ActiveRecord::Base
     unless self.alert_emails.blank?
       self.alert_emails.split(" ").each do |email|
         unless email.match(EMAIL_REGEX)
-          self.errors.add('alert_emails', 'format is not valid, please seperate email addresses by space') 
+          self.errors[:alert_emails] = 'format is not valid, please seperate email addresses by space'
           break
         end
       end
@@ -45,8 +45,10 @@ class Stage < ActiveRecord::Base
   def effective_configuration(key=nil) 
     project_configs = self.project.configuration_parameters.dup
     my_configs = self.configuration_parameters.dup
-    
-    cleaned_project_configs = project_configs.delete_if{|x| my_configs.collect(&:name).collect(&:to_s).include?(x.name.to_s) }
+
+    cleaned_project_configs = project_configs.select do |x|
+      not my_configs.collect(&:name).collect(&:to_s).include?(x.name.to_s)
+    end
     
     effec_conf = cleaned_project_configs + my_configs
     effec_conf.sort!{|x, y| x.name <=> y.name }
@@ -54,7 +56,7 @@ class Stage < ActiveRecord::Base
     if key.blank?
       return effec_conf
     else # specific key look up
-      effec_conf.delete_if{|x| x.name.to_s != key.to_s}.first
+      effec_conf.select{|x| x.name.to_s == key.to_s}.first
     end
   end
   
@@ -97,15 +99,15 @@ class Stage < ActiveRecord::Base
   
   # returns an array of all effective configurations that need a prompt
   def prompt_configurations
-    res = effective_configuration.delete_if do |config|
-      !config.prompt?
+    res = effective_configuration.select do |config|
+      config.prompt?
     end
   end
   
   # returns an array of all effective configurations that do not need a prompt
   def non_prompt_configurations
-    res = effective_configuration.delete_if do |config|
-      config.prompt?
+    res = effective_configuration.select do |config|
+      not config.prompt?
     end
   end
   
@@ -124,7 +126,7 @@ class Stage < ActiveRecord::Base
     d.stage = self
     deployer = Webistrano::Deployer.new(d)
     begin
-      deployer.list_tasks.collect { |t| {:name => t.fully_qualified_name, :description => t.description} }.delete_if{|t| t[:name] == 'shell' || t[:name] == 'invoke'}
+      deployer.list_tasks.collect { |t| {name: t.fully_qualified_name, description: t.description} }.select {|t| t[:name] != 'shell' and t[:name] != 'invoke'}
     rescue Exception => e
       logger.error("Problem listing tasks of stage #{id}: #{e} - #{e.backtrace.join("\n")} ")
       [{:name => "Error", :description => "Could not load tasks - syntax error in recipe definition?"}]
@@ -132,13 +134,13 @@ class Stage < ActiveRecord::Base
   end
     
   def lock
-    other_self = self.class.find(self.id, :lock => true)
+    other_self = self.class.lock.find(self.id)
     other_self.update_attribute(:locked, 1)
     self.reload
   end
   
   def unlock
-    other_self = self.class.find(self.id, :lock => true)
+    other_self = self.class.lock.find(self.id)
     other_self.update_attribute(:locked, 0)
     other_self.update_attribute(:locked_by_deployment_id, nil)
     self.reload
@@ -146,8 +148,8 @@ class Stage < ActiveRecord::Base
   
   def lock_with(deployment)
     raise ArgumentError, "stage #{self.id.inspect} must be locked before attaching lock_info to it" unless self.locked?
-    raise ArgumentError, "deployment does not belong to stage" unless deployment.stage_id == self.id
-    other_self = self.class.find(self.id, :lock => true)
+    raise ArgumentError, 'deployment does not belong to stage' unless deployment.stage_id == self.id
+    other_self = self.class.lock.find(self.id)
     other_self.update_attribute(:locked_by_deployment_id, deployment.id)
     self.reload
   end

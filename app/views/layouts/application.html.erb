@@ -7,7 +7,7 @@
     <meta name="description" content="Peritor Webistrano - Capristrano Deployment the easy way" />
     <meta name="keywords" content="rubyonrails ruby rails capistrano deployment" />
 
-    <title><%= content_for?(:title) ? yield(:title) : "Webistrano" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : 'Webistrano' %></title>
     <%= csrf_meta_tags %>
     <%= favicon_link_tag %>
     <%= javascript_include_tag 'application' %>
@@ -28,9 +28,10 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><%= link_to 'Projects', projects_path %></li>
-                <li><%= link_to 'Hosts', hosts_path  %></li>
-                <li><%= link_to 'Recipes', recipes_path  %></li>
+                <li><%= link_to I18n.t('helpers.projects'), projects_path %></li>
+                <li><%= link_to I18n.t('helpers.hosts'), hosts_path  %></li>
+                <li><%= link_to I18n.t('helpers.recipes'), recipes_path  %></li>
+                <li><%= link_to I18n.t('helpers.users'), users_path %></li>
             </ul>
             <% if logged_in? %>
             <ul class="nav navbar-nav navbar-right">
@@ -44,13 +45,9 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2 sidebar">
+        <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <%= render partial: 'layouts/menu' %>
-                <!--<li class="active"><a href="#">Overview</a></li>-->
-                <!--<li><a href="#">Reports</a></li>-->
-                <!--<li><a href="#">Analytics</a></li>-->
-                <!--<li><a href="#">Export</a></li>-->
             </ul>
         </div>
         <br><br><br>
@@ -60,7 +57,7 @@
             <h2>
                 <%= yield :page_title %>
             </h2>
-            <br/>
+            <br>
             <% unless flash[:notice].blank? %>
                 <%= nice_flash(flash[:notice]) %>
             <% end %>
@@ -76,11 +73,11 @@
     </div>
 </div>
 
-<div id="footer">
-    <div class="container">
-        Git Version <%= `cat REVISION` %> | <a href="https://github.com/BenjaminKim/webistrano" target="_blank">https://github.com/BenjaminKim/webistrano</a>
-    </div>
-</div>
+<!--<div id="footer">-->
+    <!--<div class="container">-->
+        <!--Git Version <%= `cat REVISION` %> | <a href="https://github.kakao.com/KakaoTalk-server/webistrano-bundler" target="_blank">https://github.kakao.com/KakaoTalk-server/webistrano-bundler</a>-->
+    <!--</div>-->
+<!--</div>-->
 
 </body>
 
@@ -98,7 +95,7 @@
                 <p>Are you sure about this ?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.form.close' %></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.close' %></button>
                 <a class="btn btn-danger">Delete</a>
             </div>
         </div>

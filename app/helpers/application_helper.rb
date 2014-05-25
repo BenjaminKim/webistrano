@@ -1,37 +1,36 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def nice_flash(text)
-    render(:partial => 'layouts/flash', :locals => {:text => text})
+    render(partial: 'layouts/flash', locals: {text: text})
   end
 
   def error_flash(text)
-    render(:partial => 'layouts/flash_error', :locals => {:text => text})
+    render(partial: 'layouts/flash_error', locals: {text: text})
   end
   
   def locking_flash(text)
-    render(:partial => 'layouts/flash_locking', :locals => {:text => text})
+    render(partial: 'layouts/flash_locking', locals: {text: text})
   end
   
   def flashed_errors(object_name)
     obj = instance_variable_get("@#{object_name}")
     return nil if obj.errors.blank?
     
-      
     error_messages = obj.errors.full_messages.map {|msg| content_tag(:li, msg)}
 
     html = content_tag(:p,"#{pluralize(obj.errors.size, 'error')} prohibited this #{object_name.to_s.gsub('_', ' ')} from being saved")
-    html << content_tag(:div,
-                       content_tag(:ul, error_messages)
-                       )
+    error_messages.each do |msg|
+      html << content_tag(:div, content_tag(:ul, msg))
+    end
     
     content_for(:flash_content) do                   
-      error_flash(html)
+      error_flash(html.html_safe)
     end
   end
   
   def web_friendly_text(text)
     return text if text.blank?
-    h(text).gsub("\n",'<br />').gsub("\r",'')
+    h(text).gsub("\n",'<br>').gsub("\r",'')
   end
   
   def hide_password_in_value(config)
@@ -137,7 +136,7 @@ module ApplicationHelper
       <<-LEAF
         <div class="branch" #{"id=#{branch[:id]}" if branch[:id]}>
             <span class="glyphicon glyphicon-leaf" style="padding-left: 5px"></span>
-            <a href="#{branch[:link]}" style="padding-left: 5px">#{branch[:name]}</a>
+            <a href="#{branch[:link]}" style="padding-left: 5px" title="#{branch[:name]}" >#{branch[:name]}</a>
         </div>
       LEAF
     else
@@ -170,17 +169,35 @@ module ApplicationHelper
 
   def new_button_for_ajax(url)
     (<<-BUTTON
-    <button class="btn btn-xs btn-primary" rel="ajaxModal" data-url="#{url}">
-        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.links.new'}
+    <button class="btn btn-xs btn-success" rel="ajaxModal" data-url="#{url}">
+        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.new'}
     </button>
     BUTTON
     ).html_safe
   end
 
-  def view_button_for_ajax(url)
+  def new_button(url)
+    (<<-BUTTON
+    <a href="#{url}" class="btn btn-xs btn-success">
+      <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.new'}
+    </a>
+    BUTTON
+    ).html_safe
+  end
+
+  def view_button(url)
     (<<-BUTTON
     <a href="#{url}" class="btn btn-xs btn-info">
-      <i class="glyphicon glyphicon-eye-open"></i> #{I18n.t 'helpers.links.view'}
+      <i class="glyphicon glyphicon-eye-open"></i> #{I18n.t 'helpers.view'}
+    </a>
+    BUTTON
+    ).html_safe
+  end
+
+  def edit_button(url)
+    (<<-BUTTON
+    <a href="#{url}" class="btn btn-xs btn-primary">
+      <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.edit'}
     </a>
     BUTTON
     ).html_safe
@@ -189,7 +206,7 @@ module ApplicationHelper
   def edit_button_for_ajax(url)
     (<<-BUTTON
     <button class="btn btn-xs btn-primary" rel="ajaxModal" data-url="#{url}">
-        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.links.edit'}
+        <i class="glyphicon glyphicon-edit"></i> #{I18n.t 'helpers.edit'}
     </button>
     BUTTON
     ).html_safe
@@ -197,17 +214,17 @@ module ApplicationHelper
 
   def clone_button_for_ajax(url)
     (<<-BUTTON
-    <button class="btn btn-xs btn-success" rel="ajaxModal" data-url="#{url}">
-        <i class="glyphicon glyphicon-share"></i> #{I18n.t 'helpers.links.clone'}
+    <button class="btn btn-xs btn-warning" rel="ajaxModal" data-url="#{url}">
+        <i class="glyphicon glyphicon-share"></i> #{I18n.t 'helpers.clone'}
     </button>
     BUTTON
     ).html_safe
   end
 
-  def delete_button_for_ajax(url, delete_target_name)
+  def delete_button_for_ajax(url, delete_target_name, confirm_message = I18n.t('helpers.links.confirm'))
     (<<-BUTTON
-    <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" data-url="#{url}" data-method="delete" data-title="#{I18n.t 'helpers.titles.delete', model: delete_target_name}" data-message="#{I18n.t 'helpers.links.confirm'}">
-        <i class="glyphicon glyphicon-trash"></i> #{I18n.t 'helpers.links.delete'}
+    <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" data-url="#{url}" data-method="delete" data-title="#{I18n.t 'helpers.titles.delete', model: delete_target_name}" data-message="#{confirm_message}">
+        <i class="glyphicon glyphicon-trash"></i> #{I18n.t 'helpers.delete'}
     </button>
     BUTTON
     ).html_safe
