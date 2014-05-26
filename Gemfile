@@ -29,7 +29,7 @@ gem 'version_fu'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 
-gem 'capistrano', '2.15.5'
+gem 'capistrano', '~> 2.15.5'
 gem 'highline'
 gem 'syntax'
 gem 'open4'
@@ -52,3 +52,4 @@ group :development do
 end
 
 gem 'ace-rails-ap'
+gem 'sqlite3'

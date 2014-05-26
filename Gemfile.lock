@@ -130,6 +130,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    sqlite3 (1.3.9)
     syntax (1.2.0)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
@@ -157,7 +158,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass
-  capistrano (= 2.15.5)
+  capistrano (~> 2.15.5)
   capistrano_rsync_with_remote_cache
   capistrano_rsync_with_remote_cache_for_maven (= 0.0.7.pre)
   coffee-rails
@@ -174,6 +175,7 @@ DEPENDENCIES
   protected_attributes
   rails (= 4.1.1)
   sass-rails
+  sqlite3
   syntax
   therubyracer
   turbolinks
