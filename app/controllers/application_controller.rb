@@ -1,12 +1,10 @@
-require 'authenticated_system'
-
 class ApplicationController < ActionController::Base
-#  include BrowserFilters
-#  include ExceptionNotifiable
-  include AuthenticatedSystem
-  
 #  before_filter CASClient::Frameworks::Rails::Filter if WebistranoConfig[:authentication_method] == :cas
-  before_filter :login_from_cookie, :login_required, :ensure_not_disabled
+
+  before_action :authenticate_user!, unless: :devise_controller?
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  before_filter :ensure_not_disabled
   before_filter :build_menu_tree
   around_filter :set_timezone
 
@@ -20,10 +18,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   protected
-  
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:login, :email, :password, :password_confirmation) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :email, :password, :remember_me) }
+    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:login, :password, :password_confirmation, :current_password) }
+  end
+
   def set_timezone
     # default timezone is UTC
-    Time.zone = logged_in? ? ( current_user.time_zone rescue 'UTC'): 'UTC'
+    Time.zone = user_signed_in? ? ( current_user.time_zone rescue 'UTC'): 'UTC'
     yield
     Time.zone = 'UTC'
   end
@@ -46,7 +50,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_admin
-    if logged_in? && current_user.admin?
+    if user_signed_in? && current_user.admin?
       return true
     else
       flash[:notice] = 'Action not allowed'
@@ -56,7 +60,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_not_disabled
-    if logged_in? && current_user.disabled?
+    if user_signed_in? && current_user.disabled?
       logout
       return false
     else
@@ -113,7 +117,7 @@ class ApplicationController < ActionController::Base
   end
   
   def logout
-    self.current_user.forget_me if logged_in?
+    self.current_user.forget_me! if user_signed_in?
     cookies.delete :auth_token
     reset_session
     if WebistranoConfig[:authentication_method] != :cas

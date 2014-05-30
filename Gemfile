@@ -5,6 +5,7 @@ source 'http://gems.iwilab.com:2000/'
 gem 'rails', '4.1.1'
 
 gem 'mysql2'
+gem 'sqlite3'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
@@ -52,4 +53,8 @@ group :development do
 end
 
 gem 'ace-rails-ap'
-gem 'sqlite3'
+gem 'devise', '3.2.4'
+
+group :test do
+  gem 'minitest'
+end

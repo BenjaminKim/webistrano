@@ -26,7 +26,7 @@
   <%= time_zone_select 'user', :time_zone, ActiveSupport::TimeZone.all, {},{:style => "width:330px;"} %>
 </p>
 
-<% if logged_in? && current_user.admin? %>
+<% if user_signed_in? && current_user.admin? %>
   <p>
     <b>Admin?</b><br>
     <%= check_box 'user', 'admin', :class => 'noframe' %>

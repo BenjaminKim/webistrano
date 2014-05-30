@@ -1,6 +1,8 @@
 Webistrano::Application.routes.draw do
   root 'projects#dashboard'
 
+  devise_for :users, controllers: { sessions: 'sessions', passwords: 'passwords' }
+
   get 'hosts/search', to: 'hosts#search'
   resources :hosts
   resources :recipes
@@ -24,6 +26,7 @@ Webistrano::Application.routes.draw do
       end
     end
   end
+
   # RESTful auth
   resources :users do
     member do
@@ -31,15 +34,8 @@ Webistrano::Application.routes.draw do
       post :enable
     end
   end
+  get 'user/:login/reset_password', to: 'users#reset_password', as: 'reset_password'
 
-  resources :sessions do
-    get :version, on: :collection
-  end
-
-  get 'signup', to: 'users#new'
-  get 'login', to: 'sessions#new'
-  get 'logout', to: 'sessions#destroy'
-
-  match ':controller/:action', via: :all
-  match ':controller/:action/:id', via: :all
+  # match ':controller/:action', via: :all
+  # match ':controller/:action/:id', via: :all
 end

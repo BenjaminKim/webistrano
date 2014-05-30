@@ -31,7 +31,16 @@
                         <td align="right">
                             <% if current_user.admin? || current_user == user %>
                                 <%= edit_button_for_ajax edit_user_path(user) %>
-                                <%= delete_button_for_ajax user_path(user), user.login %>
+                                <% if user.disabled? %>
+                                    <button class="btn btn-xs btn-info" rel="ajaxModalConfirm" style="width: 66px" data-url="<%= enable_user_path(user) %>" data-method="post" data-title="<%= t('helpers.enable') %>" data-message="Are you sure?">
+                                        <i class="glyphicon glyphicon-ok"></i> <%= t('helpers.enable') %>
+                                    </button>
+                                <% else %>
+                                    <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" style="width: 66px" data-url="<%= user_path(user) %>" data-method="delete" data-title="<%= t('helpers.disable') %>" data-message="Are you sure? Disabled users can no longer login.">
+                                        <i class="glyphicon glyphicon-remove"></i> <%= t 'helpers.disable' %>
+                                    </button>
+                                <% end %>
+
                             <% end %>
                         </td>
                     </tr>
@@ -43,7 +52,7 @@
 
 <% content_for(:breadcrumb) do %>
     <% breadcrumb_box do %>
-        <%= link_to "Users", users_path %>
+        <%= link_to t('helpers.users'), users_path %>
     <% end %>
 <% end %>
 
