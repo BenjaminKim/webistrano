@@ -3,14 +3,14 @@ class Stage < ActiveRecord::Base
   has_and_belongs_to_many :recipes
   has_many :roles, -> { order 'name ASC' }, dependent: :destroy
   has_many :hosts, -> { uniq }, through: :roles
-  has_many :configuration_parameters, -> { order 'name ASC' }, :dependent => :destroy, :class_name => "StageConfiguration"
-  has_many :deployments, -> { order 'created_at DESC' }, :dependent => :destroy #, :select => "deployments.id, deployments.task, deployments.stage_id, deployments.created_at, deployments.updated_at, deployments.completed_at, deployments.description, deployments.user_id, deployments.excluded_host_ids, deployments.revision, deployments.pid, deployments.status", :limit => 3
-  belongs_to :locking_deployment, :class_name => 'Deployment', :foreign_key => :locked_by_deployment_id 
-  
-  validates_uniqueness_of :name, :scope => :project_id
-  validates_length_of :name, :maximum => 250
+  has_many :configuration_parameters, -> { order 'name ASC' }, dependent: :destroy, class_name: 'StageConfiguration'
+  has_many :deployments, -> { order 'created_at DESC' }, dependent: :destroy
+  belongs_to :locking_deployment, class_name: 'Deployment', foreign_key: :locked_by_deployment_id
+
+  validates_uniqueness_of :name, scope: :project_id
+  validates_length_of :name, maximum: 250
   validates_presence_of :project, :name
-  validates_inclusion_of :locked, :in => [0,1]
+  validates_inclusion_of :locked, in: [0, 1]
   
   attr_accessible :name, :alert_emails
 
@@ -129,7 +129,7 @@ class Stage < ActiveRecord::Base
       deployer.list_tasks.collect { |t| {name: t.fully_qualified_name, description: t.description} }.select {|t| t[:name] != 'shell' and t[:name] != 'invoke'}
     rescue Exception => e
       logger.error("Problem listing tasks of stage #{id}: #{e} - #{e.backtrace.join("\n")} ")
-      [{:name => "Error", :description => "Could not load tasks - syntax error in recipe definition?"}]
+      [{name: 'Error', description: 'Could not load tasks - syntax error in recipe definition?'}]
     end
   end
     

@@ -3,10 +3,10 @@
         <div class="panel-heading"><%= pluralize(Recipe.count, 'Recipe')%> listed</div>
 
         <% if @recipes.empty? %>
-            <br>
-            No recipes configured yet.<br>
-            Recipes are custom Capistrano tasks and variables that can be used across stages.
-            <br>
+            <div class="panel-body">
+                No recipes configured yet.<br>
+                Recipes are custom Capistrano tasks and variables that can be used across stages.
+            </div>
         <% else %>
             <table class="table">
                 <thead>
@@ -41,7 +41,7 @@
 
 <% content_for(:breadcrumb) do %>
     <% breadcrumb_box do %>
-        <%= link_to "Recipes", recipes_path %>
+        <%= link_to t('helpers.recipes'), recipes_path %>
     <% end %>
 <% end %>
 

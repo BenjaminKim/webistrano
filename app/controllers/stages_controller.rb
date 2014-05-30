@@ -25,7 +25,11 @@ class StagesController < ApplicationController
   # GET /projects/1/stages/new
   def new
     @stage = current_project.stages.new
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   def clone
@@ -56,14 +60,22 @@ class StagesController < ApplicationController
       flash[:notice] = 'Stage recipes successfully copied.'
       redirect_to project_stage_url(current_project, stage)
     else
-      render layout: false
+      if request.xhr?
+        render layout: false
+      else
+        render layout: true
+      end
     end
   end
 
   # GET /projects/1/stages/1;edit
   def edit
     @stage = current_project.stages.find(params[:id])
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
   
   # GET /projects/1/stages/1/tasks
@@ -131,7 +143,13 @@ class StagesController < ApplicationController
     @stage = current_project.stages.find(params[:id])
 
     respond_to do |format|
-      format.html { render layout: false }
+      format.html {
+        if request.xhr?
+          render layout: false
+        else
+          render layout: true
+        end
+      }
       format.xml  { render xml: @stage.to_xml }
     end
   end

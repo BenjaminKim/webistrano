@@ -4,10 +4,8 @@
         <div class="panel-heading"><%=h pluralize(Project.count, 'Project')%> listed</div>
         <% if @projects.empty? %>
             <div class="panel-body">
-                <br>
                 No projects configured yet.<br>
                 Please add a project.
-                <br>
             </div>
         <% else %>
             <table class="table">

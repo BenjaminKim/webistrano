@@ -1,5 +1,5 @@
 class HostsController < ApplicationController
-  before_filter :ensure_admin, :only => [:new, :edit, :destroy, :create, :update]
+  before_filter :ensure_admin, only: [:new, :edit, :destroy, :create, :update]
   PAGE_SIZE = 100
 
   helper_method :pager_calculater
@@ -46,13 +46,21 @@ class HostsController < ApplicationController
   # GET /hosts/new
   def new
     @host = Host.new
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # GET /hosts/1;edit
   def edit
     @host = Host.find(params[:id])
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # POST /hosts
@@ -64,10 +72,10 @@ class HostsController < ApplicationController
       if @host.save
         flash[:notice] = 'Host was successfully created.'
         format.html { redirect_to host_url(@host) }
-        format.xml  { head :created, :location => host_url(@host) }
+        format.xml  { head :created, location: host_url(@host) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @host.errors.to_xml }
+        format.html { render action: 'new' }
+        format.xml  { render xml: @host.errors.to_xml }
       end
     end
   end
@@ -83,8 +91,8 @@ class HostsController < ApplicationController
         format.html { redirect_to host_url(@host) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @host.errors.to_xml }
+        format.html { render action: 'edit' }
+        format.xml  { render xml: @host.errors.to_xml }
       end
     end
   end

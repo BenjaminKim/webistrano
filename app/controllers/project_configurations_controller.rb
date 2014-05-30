@@ -9,7 +9,7 @@ class ProjectConfigurationsController < ApplicationController
 
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @configuration.to_xml }
+      format.xml  { render xml: @configuration.to_xml }
     end
   end
 
@@ -17,7 +17,13 @@ class ProjectConfigurationsController < ApplicationController
   def new
     @configuration = current_project.configuration_parameters.new
     respond_to do |format|
-      format.html { render layout: false }
+      format.html {
+        if request.xhr?
+          render layout: false
+        else
+          render layout: true
+        end
+      }
     end
   end
 
@@ -25,7 +31,13 @@ class ProjectConfigurationsController < ApplicationController
   def edit
     @configuration = current_project.configuration_parameters.find(params[:id])
     respond_to do |format|
-      format.html { render layout: false }
+      format.html {
+        if request.xhr?
+          render layout: false
+        else
+          render layout: true
+        end
+      }
     end
   end
 
@@ -38,10 +50,10 @@ class ProjectConfigurationsController < ApplicationController
       if @configuration.save
         flash[:notice] = 'ProjectConfiguration was successfully created.'
         format.html { redirect_to project_url(current_project) }
-        format.xml  { head :created, :location => project_url(current_project) }
+        format.xml  { head :created, location: project_url(current_project) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @project_configuration.errors.to_xml }
+        format.html { render action: 'new' }
+        format.xml  { render xml: @project_configuration.errors.to_xml }
       end
     end
   end
@@ -57,8 +69,8 @@ class ProjectConfigurationsController < ApplicationController
         format.html { redirect_to project_url(current_project) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @configuration.errors.to_xml }
+        format.html { render action: 'edit' }
+        format.xml  { render xml: @configuration.errors.to_xml }
       end
     end
   end

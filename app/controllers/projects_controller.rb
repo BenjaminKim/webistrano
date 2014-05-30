@@ -1,5 +1,4 @@
 class ProjectsController < ApplicationController
-  
   before_filter :load_templates, :only => [:new, :create, :edit, :update]
   before_filter :ensure_admin, :only => [:new, :edit, :destroy, :create, :update]
   
@@ -37,14 +36,22 @@ class ProjectsController < ApplicationController
       @project.prepare_cloning(@original)
       render action: 'clone', layout: false
     else
-      render layout: false
+      if request.xhr?
+        render layout: false
+      else
+        render layout: true
+      end
     end
   end
 
   # GET /projects/1;edit
   def edit
     @project = Project.find(params[:id])
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # POST /projects

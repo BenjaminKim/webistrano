@@ -10,20 +10,28 @@ class RolesController < ApplicationController
 
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @role.to_xml }
+      format.xml  { render xml: @role.to_xml }
     end
   end
 
   # GET /projects/1/stages/1/roles/new
   def new
     @role = @stage.roles.new
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # GET /projects/1/stages/1/roles/1;edit
   def edit
     @role = @stage.roles.find(params[:id])
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # POST /projects/1/stages/1/roles
@@ -32,7 +40,7 @@ class RolesController < ApplicationController
     if params[:role][:host_id].empty?
       host = Host.find_by_name params[:host_new]
       unless host
-        host = Host.new :name=>params[:host_new]
+        host = Host.new name: params[:host_new]
         host.save
       end
       params[:role][:host_id] = host.id
@@ -44,10 +52,10 @@ class RolesController < ApplicationController
       if @role.save
         flash[:notice] = 'Role was successfully created.'
         format.html { redirect_to project_stage_url(@project, @stage) }
-        format.xml  { head :created, :location => project_stage_url(@project, @stage) }
+        format.xml  { head :created, location: project_stage_url(@project, @stage) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @role.errors.to_xml }
+        format.html { render action: 'new' }
+        format.xml  { render xml: @role.errors.to_xml }
       end
     end
   end
@@ -63,8 +71,8 @@ class RolesController < ApplicationController
         format.html { redirect_to project_stage_url(@project, @stage) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @role.errors.to_xml }
+        format.html { render action: 'edit' }
+        format.xml  { render xml: @role.errors.to_xml }
       end
     end
   end

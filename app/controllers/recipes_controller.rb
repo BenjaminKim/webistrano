@@ -8,7 +8,7 @@ class RecipesController < ApplicationController
 
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @recipes.to_xml }
+      format.xml  { render xml: @recipes.to_xml }
     end
   end
 
@@ -19,7 +19,7 @@ class RecipesController < ApplicationController
     
     respond_to do |format|
       format.html # show.rhtml
-      format.xml  { render :xml => @recipe.to_xml }
+      format.xml  { render xml: @recipe.to_xml }
     end
   end
 
@@ -36,16 +36,17 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.xml
   def create
-    @recipe = Recipe.new((params[:recipe] || {}).merge(:user_id => current_user.id))
+    h = (params[:recipe] || {}).merge(user_id: current_user.id)
+    @recipe = Recipe.new h
 
     respond_to do |format|
       if @recipe.save
         flash[:notice] = 'Recipe was successfully created.'
         format.html { redirect_to recipe_url(@recipe) }
-        format.xml  { head :created, :location => recipe_url(@recipe) }
+        format.xml { head :created, location: recipe_url(@recipe) }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @recipe.errors.to_xml }
+        format.html { render action: 'new' }
+        format.xml { render xml: @recipe.errors.to_xml }
       end
     end
   end
@@ -56,13 +57,13 @@ class RecipesController < ApplicationController
     @recipe = Recipe.find(params[:id])
 
     respond_to do |format|
-      if @recipe.update_attributes((params[:recipe] || {}).merge(:user_id => current_user.id))
+      if @recipe.update_attributes((params[:recipe] || {}).merge(user_id: current_user.id))
         flash[:notice] = 'Recipe was successfully updated.'
         format.html { redirect_to recipe_url(@recipe) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @recipe.errors.to_xml }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @recipe.errors.to_xml }
       end
     end
   end

@@ -9,13 +9,13 @@
     </p>
     <p>
         <b>Description</b><br>
-        <%= text_area 'project', 'description', :style =>'width:330px; height: 100px' %>
+        <%= text_area 'project', 'description', style: 'width:330px; height: 100px' %>
     </p>
 </div>
 <div>
     <h4>Project Type:</h4>
     <% for template in @template_infos %>
-        <div id="<%=h template.first %>_desc">
+        <div id="<%=h template.first %>_desc" hidden="hidden">
             <b><%=h template.first.to_s.titleize %>:</b><br>
             <%=h template.last.html_safe %>
         </div>

@@ -6,7 +6,7 @@ class Deployment < ActiveRecord::Base
   has_and_belongs_to_many :roles
   
   validates_presence_of :task, :stage, :user
-  validates_length_of :task, :maximum => 250
+  validates_length_of :task, maximum: 250
   
   serialize :excluded_host_ids
   

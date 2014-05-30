@@ -2,12 +2,12 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"><%= I18n.t 'helpers.titles.edit', model: (I18n.t 'helpers.stage') %></h4>
+            <h4 class="modal-title"><%= t('helpers.titles.edit', model: t('helpers.project')) %></h4>
         </div>
 
-        <%= form_tag(:project, url: project_path(@project), html: {method: :put}) do %>
+        <%= form_tag(:project, url: project_path(@project), method: :put) do %>
             <div class="modal-body">
-            <%= render(partial: 'form')%>
+                <%= render(partial: 'form')%>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><%= I18n.t 'helpers.close'%></button>

@@ -12,6 +12,15 @@
         <td><%=h @user.time_zone.to_s %></td>
     </tr>
     <tr>
+        <td style="width: 10%"><b>Note</b></td>
+        <td><% if @user.admin? %>
+            Admin
+            <% else %>
+            None admin
+            <% end %>
+        </td>
+    </tr>
+    <tr>
         <td style="width: 10%"><b><%= "##{I18n.t 'helpers.deployments'}" %></b></td>
         <td><%=h @user.deployments.count %></td>
     </tr>
@@ -22,12 +31,12 @@
 
 <fieldset class="fieldset">
     <legend>Recent deployment history</legend>
-    <%= render(:partial => 'deployments', :locals => {:user => @user, :deployments => @deployments})%>
+    <%= render(partial: 'deployments', locals: {user: @user, deployments: @deployments})%>
 </fieldset>
 
 <% content_for(:breadcrumb) do %>
     <% breadcrumb_box do %>
-        <%= link_to 'Manage users', users_path, :style => 'float:right' %>
+        <%= link_to 'Manage users', users_path, style: 'float:right' %>
         <%= link_to 'Users', users_path %> &gt;
         User <%= link_to @user.login, user_path(@user) %>
     <% end %>

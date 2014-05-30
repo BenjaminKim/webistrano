@@ -16,13 +16,21 @@ class StageConfigurationsController < ApplicationController
   # GET /project/1/stage/1/stage_configurations/new
   def new
     @configuration = @stage.configuration_parameters.new
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # GET /project/1/stage/1/stage_configurations/1;edit
   def edit
     @configuration = @stage.configuration_parameters.find(params[:id])
-    render layout: false
+    if request.xhr?
+      render layout: false
+    else
+      render layout: true
+    end
   end
 
   # POST /project/1/stage/1/stage_configurations
