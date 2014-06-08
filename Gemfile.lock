@@ -1,6 +1,5 @@
 GEM
   remote: https://rubygems.org/
-  remote: http://gems.iwilab.com:2000/
   specs:
     Platform (0.4.0)
     ace-rails-ap (2.0.1)
