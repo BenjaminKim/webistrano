@@ -16,7 +16,7 @@
             <td><%= config.prompt_status_in_html %></td>
             <td align="right">
                 <%= edit_button_for_ajax edit_project_project_configuration_path(@project, config) %>
-                <%= delete_button_for_ajax project_stage_path(@project, config), config.name %>
+                <%= delete_button_for_ajax project_project_configuration_path(@project, config), config.name %>
             </td>
         </tr>
     <% end %>
