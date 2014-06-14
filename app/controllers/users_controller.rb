@@ -71,8 +71,8 @@ class UsersController < ApplicationController
     password = user_param.delete(:password)
     password_cofirmation = user_param.delete(:password_confirmation)
 
-    if password && password_cofirmation
-      @user.reset_password(password, password_cofirmation)
+    if (@user == current_user or @user.admin?) and (password and password_cofirmation)
+      @user.reset_password!(password, password_cofirmation)
     end
 
     if current_user.admin?
@@ -91,11 +91,8 @@ class UsersController < ApplicationController
         format.html { redirect_to user_url(@user) }
         format.xml  { head :ok }
       else
-        format.html {
-          flash[:error] = @user.errors. full_messages
-          raise 'asdf'
-          redirect_to users_path
-        }
+        flash[:error] = @user.errors. full_messages
+        format.html { redirect_to users_path }
         format.xml  { render xml: @user.errors.to_xml }
       end
     end

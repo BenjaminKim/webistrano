@@ -106,7 +106,10 @@
     $(document).ready(function() {
         $("[rel='tooltip']").tooltip();
         $("[rel='ajaxModal']").click(function(e){
-            $('#modalWindow').remove();
+            var modalWindow = $('#modalWindow');
+            if (modalWindow) {
+                modalWindow.remove();
+            }
             e.preventDefault();
             var url = $(this).attr('data-url');
             $.get(url, function(data) {

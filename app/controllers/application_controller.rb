@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
     reset_session
     if WebistranoConfig[:authentication_method] != :cas
       flash[:notice] = "You have been logged out."
-      redirect_back_or_default( root_path )
+      redirect_to root_path
     else
       redirect_to "#{CASClient::Frameworks::Rails::Filter.config[:logout_url]}?serviceUrl=#{home_url}"
     end

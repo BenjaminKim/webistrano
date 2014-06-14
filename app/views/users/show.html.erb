@@ -54,7 +54,7 @@
                     </button>
                 <% else %>
                     <button class="btn btn-xs btn-danger" rel="ajaxModalConfirm" data-url="<%= user_path(@user) %>" data-method="delete" data-title="<%= t('helpers.disable') %>" data-message="Are you sure? Disabled users can no longer login.">
-                        <i class="glyphicon glyphicon-remove"></i><%= t 'helpers.disable' %>
+                        <i class="glyphicon glyphicon-remove"></i> <%= t 'helpers.disable' %>
                     </button>
                 <% end %>
             <% end %>
