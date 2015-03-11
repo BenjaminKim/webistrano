@@ -1,11 +1,13 @@
-Webistrano2
+Webistrano4
 ===========
+
+Webistrano4 is fork of Webistrano. Webistrano was cool but is hasn't been maintained so long, we decided to fork it. Webistrano reborned with Ruby 2.2, Rails 4 and Bootstrap 3.
 
 Capistrano deployment the easy way
 
-Webistrano is a Web UI for managing Capistrano deployments.<br>
-It lets you manage projects and their stages like test, production, <br>
-and staging with different settings.<br>
+Webistrano is a Web UI for managing Capistrano deployments.  
+It lets you manage projects and their stages like test, production,  
+and staging with different settings.  
 Those stages can then be deployed with Capistrano through Webistrano.
 
 ## Installation
