@@ -49,7 +49,7 @@ Those stages can then be deployed with Capistrano through Webistrano.
   ```
   Webistrano is then available at http://host:3000/
 
-  The default user is `admin`, the password is `admin`. Please change the password after the first login.
+  The default user is `admin`, the password is `webistrano`. Please change the password after the first login.
 
 ## Minimum requirement
 
