@@ -13,10 +13,10 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   helper_method :current_stage, :current_project
 
-  # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  protect_from_forgery
-  
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :exception
+
   protected
 
   def configure_permitted_parameters

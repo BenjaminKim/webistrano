@@ -1,4 +1,4 @@
-Webistrano::Application.routes.draw do
+Rails.application.routes.draw do
   root 'projects#dashboard'
 
   devise_for :users, controllers: { sessions: 'sessions', passwords: 'passwords' }

@@ -7,7 +7,7 @@ require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env)
+Bundler.require(*Rails.groups)
 
 module Webistrano
   class Application < Rails::Application
@@ -23,16 +23,14 @@ module Webistrano
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Your secret key for verifying cookie session data integrity.
-    # If you change this key, all old sessions will become invalid!
-    # Make sure the secret is at least 30 characters and all random, 
-    # no regular words or you'll be exposed to dictionary attacks.
-
     # Make Active Record use UTC-base instead of local time
     config.time_zone = 'UTC'
 
     initializer 'webistrano.load' do
       require 'webistrano'
     end
+
+    # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end

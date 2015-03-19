@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20140528164554) do
 
-  create_table "configuration_parameters", force: true do |t|
+  create_table "configuration_parameters", force: :cascade do |t|
     t.string   "name"
     t.string   "value"
     t.integer  "project_id"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.integer  "prompt_on_deploy", default: 0
   end
 
-  create_table "deployments", force: true do |t|
+  create_table "deployments", force: :cascade do |t|
     t.string   "task"
     t.text     "log"
     t.integer  "stage_id"
@@ -39,21 +39,21 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.string   "status",            default: "running"
   end
 
-  create_table "deployments_roles", id: false, force: true do |t|
+  create_table "deployments_roles", id: false, force: :cascade do |t|
     t.integer "deployment_id"
     t.integer "role_id"
   end
 
-  create_table "hosts", force: true do |t|
+  create_table "hosts", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "project_configurations", force: true do |t|
+  create_table "project_configurations", force: :cascade do |t|
   end
 
-  create_table "projects", force: true do |t|
+  create_table "projects", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
     t.string   "template"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.datetime "updated_at"
   end
 
-  create_table "recipe_versions", force: true do |t|
+  create_table "recipe_versions", force: :cascade do |t|
     t.integer  "recipe_id"
     t.integer  "version"
     t.string   "name"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.datetime "updated_at"
   end
 
-  create_table "recipes", force: true do |t|
+  create_table "recipes", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
     t.text     "body"
@@ -80,12 +80,12 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.integer  "version",     default: 1
   end
 
-  create_table "recipes_stages", id: false, force: true do |t|
+  create_table "recipes_stages", id: false, force: :cascade do |t|
     t.integer "recipe_id"
     t.integer "stage_id"
   end
 
-  create_table "roles", force: true do |t|
+  create_table "roles", force: :cascade do |t|
     t.string   "name"
     t.integer  "stage_id"
     t.integer  "host_id"
@@ -97,10 +97,10 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.integer  "no_symlink", default: 0
   end
 
-  create_table "stage_configurations", force: true do |t|
+  create_table "stage_configurations", force: :cascade do |t|
   end
 
-  create_table "stages", force: true do |t|
+  create_table "stages", force: :cascade do |t|
     t.string   "name"
     t.integer  "project_id"
     t.datetime "created_at"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20140528164554) do
     t.integer  "locked",                  default: 0
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "login",                  default: "",    null: false
     t.string   "email",                  default: "",    null: false
     t.datetime "created_at"

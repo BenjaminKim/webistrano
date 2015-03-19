@@ -2,7 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 # Initialize the Rails application.
-Webistrano::Application.initialize!
+Rails.application.initialize!
 
 require 'open4'
 require 'capistrano/cli'
