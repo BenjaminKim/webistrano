@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.0'
 # Use sqlite3 as the database for Active Record
@@ -64,9 +63,7 @@ gem 'open4'
 gem 'erubis'
 gem 'exception_notification'
 gem 'capistrano_rsync_with_remote_cache'
-
 gem 'murder', require: false
-
 gem 'net-ssh', require: 'net/ssh'
 gem 'popen4'
 gem 'protected_attributes'

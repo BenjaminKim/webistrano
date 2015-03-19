@@ -1,8 +1,14 @@
 class AddDefaultUser < ActiveRecord::Migration
   def self.up
     User.reset_column_information
-    unless User.count > 0
-      User.create!(login: 'admin', email: 'admin@example.com', password: 'webistrano', password_confirm: 'webistrano', admin: 1)
+    if User.count == 0
+      User.create!(
+        login: 'admin',
+        email: 'admin@example.com',
+        password: 'webistrano',
+        password_confirm: 'webistrano',
+        admin: 1
+      )
     end
   end
 
