@@ -128,32 +128,11 @@ class Deployment < ActiveRecord::Base
   # TODO - at the moment `Unix &` hack
   def deploy_in_background! (opts={})
     unless Rails.env == 'test'
-      krb_env=''
-      if opts[:kerberos]
-        username = opts[:username]
-        password = opts[:password]
-
-        ccfile = File.join(Dir.tmpdir, "KAKAOAUTH.#{self.id}")
-
-        inputmethod = ""
-        if (/darwin/ =~ RUBY_PLATFORM) != nil
-          inputmethod = "--password-file=STDIN"
-        end
-
-        kinit_cmd = "kinit -c #{ccfile} #{inputmethod} #{username}"
-        status = POpen4::popen4(kinit_cmd) do |stdout, stderr, stdin, pid|
-          stdin.puts password
-        end
-        if status.exitstatus == 0
-          krb_env = "KRB5CCNAME=#{ccfile} "
-        else
-          puts "KRBFAILURE:#{status.exitstatus} #{kinit_cmd}"
-          logger.error "KERBEROS FAIL: #{status.exitstatus} #{kinit_cmd} #{self.id} (stage #{self.stage.id}/#{self.stage.name})"
-        end
-      end
-
       logger.info "Calling other ruby process in the background in order to deploy deployment #{self.id} (stage #{self.stage.id}/#{self.stage.name})"
-      system("sh -c \"cd #{Rails.root} && #{krb_env} bundle exec rails runner -e #{Rails.env} ' deployment = Deployment.find(#{self.id}); deployment.prompt_config = #{self.prompt_config.inspect.gsub('"', '\"')} ; Webistrano::Deployer.new(deployment).invoke_task! ' >> #{Rails.root}/log/#{Rails.env}.log 2>&1\" &")
+      system_command = "sh -c \"cd #{Rails.root} && bundle exec rails runner -e #{Rails.env} ' deployment = Deployment.find(#{self.id}); deployment.prompt_config = #{self.prompt_config.inspect.gsub('"', '\"')} ; Webistrano::Deployer.new(deployment).invoke_task! ' >> #{Rails.root}/log/#{Rails.env}.log 2>&1\" &"
+      logger.info "SYSTEM_COMMAND: #{system_command}"
+      system(system_command)
+
       # Webistrano::Deployer.new(Deployment.find(self.id)).invoke_task!
     end
   end

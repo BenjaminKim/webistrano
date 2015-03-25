@@ -54,7 +54,12 @@ module Webistrano
     end
     
     def write_msg(msg)
-      @deployment.file_logger << msg
+      # TODO:
+      begin
+        @deployment.file_logger << msg
+      rescue Exception => e
+        log(IMPORTANT, e.inspect)
+      end
     end
     
     # replaces deployment passwords in the message by 'XXXXX'

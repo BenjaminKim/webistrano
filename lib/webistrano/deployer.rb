@@ -166,9 +166,9 @@ module Webistrano
     # load custom project recipes
     def load_stage_custom_recipes(config)
       begin
-        kerberos = Recipe.find_by_name("Kerberos")
-        logger.info("loading stage recipe '#{kerberos.name}' ")
-        config.load(:string => kerberos.body)
+        #kerberos = Recipe.find_by_name("Kerberos")
+        #logger.info("loading stage recipe '#{kerberos.name}' ")
+        #config.load(:string => kerberos.body)
 
         deployment.stage.recipes.ordered.each do |recipe|
           logger.info("loading stage recipe '#{recipe.name}' ")
@@ -194,7 +194,6 @@ module Webistrano
           config.with_env("LC_ALL", "C") do
 
             stdout_output = ''
-            stderr_output = ''
 
             status = Open4::popen4(cmd) do |pid, stdin, stdout, stderr|
               stdin.close
