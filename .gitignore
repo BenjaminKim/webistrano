@@ -24,3 +24,4 @@ unicorn.socket
 webistrano_config.rb
 webistrano_development
 config/database.yml
+/.rsync_cache
