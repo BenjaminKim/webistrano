@@ -1,6 +1,8 @@
 Webistrano4
 ===========
 
+[![Join the chat at https://gitter.im/BenjaminKim/webistrano](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/BenjaminKim/webistrano?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Webistrano4 is fork of Webistrano. Webistrano was cool but is hasn't been maintained so long, we decided to fork it. Webistrano reborned with Ruby 2.2, Rails 4 and Bootstrap 3.
 
 Capistrano deployment the easy way
